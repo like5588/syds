@@ -1,0 +1,13 @@
+function publish(_this,stat){
+	var data = $(_this).parent().parent().parent().serialize(); 
+	$.ajax({
+		  type: "post", 
+		  data : data+"&status="+stat,
+		  url: "publish.do",  
+		  cache: false,  
+		  dataType: "json",
+	  	  success: function(msg) {
+	  		
+		  }
+	});
+}

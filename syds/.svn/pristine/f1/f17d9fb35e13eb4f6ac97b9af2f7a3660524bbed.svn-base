@@ -1,0 +1,18 @@
+package com.ty.photography.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ty.photography.dao.JudgeLogonMapper;
+import com.ty.photography.model.JudgeLogon;
+import com.ty.photography.service.IJudgeLogonService;
+@Service
+public class JudgeLogonServiceImpl implements IJudgeLogonService{
+	@Autowired
+	private JudgeLogonMapper judgeLogonMapper;
+	
+	public JudgeLogon findByAccount(String account){
+		return judgeLogonMapper.findByAccount(account);
+	}
+
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.PhotoListMapper"> 
+
+	<resultMap id="resultMap" type="com.ty.photography.model.PhotoList" >
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="photo_id" property="photoId" jdbcType="VARCHAR"/>
+		<result column="photo_url" property="photoUrl" jdbcType="VARCHAR"/>
+		<result column="list_type" property="listType" jdbcType="VARCHAR"/>
+		<result column="comment" property="comment" jdbcType="VARCHAR"/>
+		<result column="creater" property="creater" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="modify_user" property="modifyUser" jdbcType="VARCHAR"/>
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+		<result column="status" property="status" jdbcType="TINYINT"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR"/>
+		<result column="photo_type" property="photoType" jdbcType="VARCHAR"/>
+		<result column="upload_date" property="uploadDate" jdbcType="TIMESTAMP"/>
+		<result column="photo_title" property="photoTitle" jdbcType="VARCHAR"/>
+		<result column="laud_num" property="laudNum" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<select id="findIndexPhotos" parameterType="string"  resultMap="resultMap">
+		select p.photo_url, p.upload_date, u.user_name,p.photo_title from sy_user_info u,sy_photo_list l,sy_photo_info p
+		where
+			u.id = l.user_id 
+			and l.status = '1' 
+			and p.id = l.photo_id 
+			and l.list_type = #{listType} 
+			order by l.modify_time desc
+			limit 8
+	</select>
+	
+	<select id="findIndexPhotosByPage" parameterType="com.ty.photography.common.SearchPageUtil" resultMap="resultMap">
+		select l.*, u.user_name as user_name, p.photo_type,p.upload_date,p.photo_title , p.laud_num from sy_user_info u,sy_photo_list l,sy_photo_info p
+		<where>
+			u.id = l.user_id and l.status = '1' and p.id = l.photo_id
+			<if test="object !=null and object.listType != null">
+				and l.list_type = #{object.listType} 
+			</if>
+			<if test="object !=null and object.photoType != null">
+				and p.photo_type = #{object.photoType} 
+			</if>
+			<if test="object !=null and object.photoTitle != null">
+				and p.photo_title like '%${object.photoTitle}%' 
+			</if>
+			<if test="object !=null and object.userName != null">
+				and u.user_name like '%${object.userName}%' 
+			</if>
+		</where> 
+		order by l.modify_time desc
+	</select>
+</mapper>

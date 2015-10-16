@@ -1,0 +1,67 @@
+$(document).ready(function(){
+
+	$("#checkAll").click(function(){
+		if($(this).prop('checked')){
+			$("input[type='checkbox']").each(function(){
+				if($(this).attr("id") != "invertCheck"){
+					this.checked =true;
+				}
+			});
+		}else{
+			$("input[type='checkbox']").each(function(){
+				if($(this).attr("id") != "invertCheck"){
+					this.checked =false;
+				}
+			});
+		}
+	});
+	
+	$("#invertCheck").click(function(){
+		var checkSize=0;
+		var arrChk= $("input[type='checkbox']");
+		$("input[type='checkbox']").each(function(){
+			if($(this).attr("id") != "checkAll" && $(this).attr("id") != "invertCheck"){
+				if(!$(this).prop("checked")){
+						$(this).prop('checked',true);
+						checkSize++;
+						if(checkSize==arrChk.length-2){
+							if(!$("#checkAll").prop('checked')){
+								$("#checkAll").prop('checked',true);
+								return false;
+							}
+						}
+				}else{
+					$(this).prop('checked',false);
+					$("#checkAll").prop('checked',false);
+				}
+			}
+		});
+	});
+	
+	$("input[type='checkbox']").click(function(){
+		var checkSize=0;
+		var arrChk= $("input[type='checkbox']");
+		if($(this).attr("id") != "checkAll" && $(this).attr("id") != "invertCheck"){
+			$("input[type='checkbox']").each(function(){
+				if($(this).attr("id") != "checkAll" && $(this).attr("id") != "invertCheck"){
+					if(!$(this).prop("checked")){
+						if($("#checkAll").prop('checked')){
+							$("#checkAll").prop('checked',false);
+							return false;
+						}
+					}else{
+						checkSize++;
+						if(checkSize==arrChk.length-2){
+							if(!$("#checkAll").prop('checked')){
+								$("#checkAll").prop('checked',true);
+								return false;
+							}
+						}
+					}
+				}
+			});
+		}
+	});
+
+
+});

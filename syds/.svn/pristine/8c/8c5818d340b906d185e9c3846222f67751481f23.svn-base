@@ -1,0 +1,133 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="com.ty.photography.monitor.TelecomInfo" %>
+
+ <!-- 轮播代码 开始 -->
+    <div class="banner">
+        <div class="inner">
+            <div class="menu">
+                <ul>
+                    <li class="active">
+                        <a href="javascript:;" class="png menu_home">
+                            <span class="hide">云端桌面</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="png menu_game">
+                            <span class="hide">游戏</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="png menu_video">
+                            <span class="hide">视频</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="png menu_novel">
+                            <span class="hide">小说</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="png menu_music">
+                            <span class="hide">音乐</span>
+                        </a>
+                    </li>
+                    <li class="btns">
+                        <a href="http://www.lanrentuku.com/" class="png menu_download">
+                            <span class="hide">立即下载</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mask"></div>
+    </div>
+    <!-- 轮播代码 结束 -->
+    
+    <!--导航开始-->
+    <div class="yg_menu_bg">
+	<div class="yg_menu">
+    	<ul>
+        	<li><a href="index.html">首页</a></li>
+            <li><a href="introduction.html">大赛介绍</a></li>
+            
+            <li style="width:120px; color:#959595">入选名单</li>
+        </ul>
+       <div class="yg_menu_login">
+       		<a href="#">登录</a>&nbsp;&nbsp;|&nbsp;
+            <a href="#">注册</a>
+       </div>
+    </div>
+</div>
+
+ <!--导航结束-->
+
+    <div class="yg_33province_bg">
+    	<div class="mh_picup"><a href="#"><img src="mh_images/index_up.png" /></a></div>
+        
+        <div class="mh_number">
+        	<ul id="photos">
+            	<li class="number_name" >参展作品：</li>
+            </ul>
+        
+       
+        	<ul id="users">
+        		<li class="number_name" > 参与人数：</li>
+           </ul>
+        
+        </div>
+<script type="text/javascript">
+	//参展作品数赋值方法
+	var userNum = <%=TelecomInfo.allUserNum.intValue()%>;
+	var photoNum = <%=TelecomInfo.allPhotosNum.intValue()%>; 
+	
+	var photoNumString = photoNum.toString(); 
+	var start = 0;
+	var number = "";
+	if(photoNumString.length<5){
+		for(var i=1;i<=5-photoNumString.length;i++){
+			var x = document.createElement("LI");
+			var t = document.createTextNode("0");
+			x.appendChild(t);
+			document.getElementById("photos").appendChild(x);
+		} 
+	}
+	for(var end = 1;end<=photoNumString.length;end++){
+		number = photoNumString.substr(start, 1); 
+		var x = document.createElement("LI");
+		var t = document.createTextNode(number);
+		x.appendChild(t);
+		document.getElementById("photos").appendChild(x);
+		start = end;
+	}
+	//参与人数赋值方法
+	var userNumString = userNum.toString();
+	start = 0;
+	number = "";
+	if(userNumString.length<5){
+		for(var i=1;i<=5-userNumString.length;i++){
+			var x = document.createElement("LI");
+			var t = document.createTextNode("0");
+			x.appendChild(t);
+			document.getElementById("users").appendChild(x);
+		} 
+	}
+	for(var end = 1;end<=userNumString.length;end++){
+		number = userNumString.substr(start, 1); 
+		var x = document.createElement("LI");
+		var t = document.createTextNode(number);
+		x.appendChild(t);
+		document.getElementById("users").appendChild(x);
+		start = end;
+	}
+
+//显示佳作轮播
+$(function(){
+	$("#KinSlideshow").KinSlideshow();
+	$("#KinSlideshow1").KinSlideshow();
+})
+	
+</script> 
+  <!--#include file ="foot.html"-->
+</body>
+</html>

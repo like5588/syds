@@ -1,0 +1,70 @@
+package com.ty.photography.controller.system;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.ty.photography.model.JudgeLogon;
+import com.ty.photography.model.PhotoInfoDto;
+import com.ty.photography.service.IPhotoInfoService;
+
+@Controller
+@RequestMapping(value="sys")
+public class BatchDownLoadController {
+	
+	@Autowired
+	public IPhotoInfoService photoInfoServiceImpl;
+	
+	@RequestMapping(value="batchDownload.do",produces="text/plain;charset=UTF-8;")  
+	public void batchDownload(HttpServletRequest request, HttpServletResponse response){
+		try{
+			PhotoInfoDto photoInfoDto = new PhotoInfoDto();
+			JudgeLogon judgeLogon = (JudgeLogon)request.getSession().getAttribute("judge");
+			if(judgeLogon.getType()==0){
+				return;
+			}else if(judgeLogon.getType() == 5){	//电信评委
+				photoInfoDto.setCompetitionType(5);
+				photoInfoDto.setCompetitionArea(judgeLogon.getCompetitionArea());
+			}else if(judgeLogon.getType() == 9){	//全国评委
+				photoInfoDto.setCompetitionType(9);
+				photoInfoDto.setJudgeGroupId(judgeLogon.getJudgeGroupId());
+				if(judgeLogon.getJudgeRole() == 0){	//组员
+					photoInfoDto.setJudgeId(judgeLogon.getId());
+				}
+			}
+			photoInfoDto.setPhotoStatus(1);	
+			photoInfoDto.setIsSelect("2");
+			List<PhotoInfoDto> photoInfoDtoList = photoInfoServiceImpl.findAllPhotos(photoInfoDto);
+			down(response,photoInfoDtoList);
+		}catch(Exception e){
+			
+		}
+	}
+	private void down(HttpServletResponse response,List<PhotoInfoDto> photoInfoDtoList) throws IOException{
+		response.setContentType("APPLICATION/OCTET-STREAM");
+		response.setHeader("Content-Disposition", "attachment; filename="+java.net.URLEncoder.encode("入围作品","utf-8")+".zip");
+		ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+		for (PhotoInfoDto photoInfoDto : photoInfoDtoList) {
+			zos.putNextEntry(new ZipEntry(photoInfoDto.getUserName()+" 《"+photoInfoDto.getPhotoTitle()+"》"));
+			FileInputStream fis = new FileInputStream(photoInfoDto.getPhotoUrl());
+			byte[] buffer = new byte[1024];
+			int r = 0;
+			while ((r = fis.read(buffer)) != -1) {
+				zos.write(buffer, 0, r);
+			}
+			fis.close();
+		}
+		zos.flush();
+		zos.close();
+	}
+
+}

@@ -1,0 +1,97 @@
+package com.ty.photography.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.model.UserBindDto;
+import com.ty.photography.service.ILotteryService;
+
+@Controller
+public class LotteryController {
+	private Logger log = LoggerFactory.getLogger(LotteryController.class);
+	@Autowired
+	private ILotteryService lotteryServiceImpl;
+	
+	@RequestMapping(value="/mh/lottery.do",produces="text/plain;charset=UTF-8;")  
+	@ResponseBody
+	public String lottery(HttpServletRequest request){
+		Map<String,Integer> resultMap = new HashMap<String,Integer>();
+		try{
+			Random random = new Random();
+			int angle = 0;	//旋转角度
+			int circle = 360;	//
+			int duration = 5000;	//持续时间
+			
+			int first = 157;
+			int second = 337;
+			int third = 76;
+			int fourth = 247;
+			
+			int[] none = {22,112,202,292};
+			int[] circles = {4,5,6};	//旋转4-6圈
+			
+			UserBindDto userBindDto = (UserBindDto)request.getSession().getAttribute("mh_userBindInfo");
+			int result =lotteryServiceImpl.lottery(userBindDto.getUserId());
+			int info = 0;
+			switch(result){
+				case 1:
+					angle=first;
+					info = 1;
+					break;
+				case 2:
+					angle=second;
+					info = 2;
+					break;
+				case 3:
+					angle=third;
+					info = 3;
+					break;
+				case 4:
+					angle=fourth;
+					info = 4;
+					break;
+				case 0:
+					angle=none[random.nextInt(none.length)];
+					break;
+				default:
+					angle=none[random.nextInt(none.length)];
+			}
+			int num = random.nextInt(circles.length);
+			circle *= circles[num];
+			angle += circle; 
+			if(num==1){
+				duration += 800;
+			}else if(num==2){
+				duration += 1600;
+			}
+			if(result == -3){
+				resultMap.put("result", 3);	//用户积分不足
+			}else if(result == -2){
+				resultMap.put("result", 2); //已到达抽奖次数上限
+			}else if(result == -1){
+				resultMap.put("result", 0); //不在抽奖时间,则为未中奖
+			}else{
+				resultMap.put("result", 0);
+			}
+			resultMap.put("angle", angle);
+			resultMap.put("duration", duration);
+			resultMap.put("info",info);
+		}catch(Exception e){
+			log.error("----lottery has error ----",e);
+			resultMap.put("result", -1);
+		}
+		return CommonUtils.toJsonStr(resultMap);
+	}
+
+}

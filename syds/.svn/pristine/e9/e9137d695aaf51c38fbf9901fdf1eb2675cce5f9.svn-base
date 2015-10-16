@@ -1,0 +1,75 @@
+package com.ty.photography.model;
+
+import java.util.Date;
+
+/**
+ * 榜单信息
+ * @author chunxiang
+ *
+ */
+public class PhotoList {
+	private String id;
+	private String photoId;	//照片id	
+	private String listType;	//榜单类型
+	private String comment;	//点评
+	private String creater;	//创建人
+	private Date createTime;		//创建时间	
+	private String modifyUser;			//修改人
+	private Date modifyTime;	//修改时间
+	private Integer status;			//状态	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getPhotoId() {
+		return photoId;
+	}
+	public void setPhotoId(String photoId) {
+		this.photoId = photoId;
+	}
+	public String getListType() {
+		return listType;
+	}
+	public void setListType(String listType) {
+		this.listType = listType;
+	}
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	public String getCreater() {
+		return creater;
+	}
+	public void setCreater(String creater) {
+		this.creater = creater;
+	}
+	public Date getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	public String getModifyUser() {
+		return modifyUser;
+	}
+	public void setModifyUser(String modifyUser) {
+		this.modifyUser = modifyUser;
+	}
+	public Date getModifyTime() {
+		return modifyTime;
+	}
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
+}

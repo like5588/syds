@@ -1,0 +1,138 @@
+
+$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+    // 获取已激活的标签页的名称
+    var activeTab = $(e.target).text(); 
+    // 获取前一个激活的标签页的名称
+    var previousTab = $(e.relatedTarget).text(); 
+    if(activeTab=="消息模板设置"){
+    	$.ajax({
+    		url : "getMessageTemplate.do",
+    		type : 'POST',
+    		dataType:"html",
+    		cache : false,
+    		success : function(text){
+    			$("#ps_template").val(text);
+    		}
+    	});
+    }
+    else if(activeTab=="奖项设置"){
+    	$.ajax({
+    		url : "getAwardList.do",
+    		type : 'POST',
+    		dataType:"html",
+    		cache : false,
+    		success : function(text){
+    			$("#award_list").html(text);
+    		}
+    	});
+    }
+ });
+
+
+$("#save_temp").click(function(){
+	var params = $("#temp_form").serialize();
+	$.ajax({
+		url : "saveMessageTemplate.do",
+		type : 'POST',
+		data : params,
+		dataType:"html",
+		cache : false,
+		success : function(text){
+			if(text=="OK"){
+				alert("保存成功");
+			}
+			else if(text=="ERROR"){
+				alert("保存失败");
+			}
+			
+		}
+	});
+});
+
+$("#add_panel").click(function(){
+	$.ajax({
+		url : "app/template/parameter_setting_code.txt",
+		type : 'GET',
+		dataType:"html",
+		cache : false,
+		success : function(text){
+			text=text.replace(/\${count}/g,rowNum++);
+			$("#award_list").append(text);
+		}
+	});
+	
+})
+
+function save_award(_this){
+	var formId = $(_this).parent().parent().attr("id");
+	var params = $("#"+formId).serialize();
+	$.ajax({
+		url : "saveAwardParam.do",
+		type : 'POST',
+		data : params,
+		dataType:"json",
+		cache : false,
+		success : function(text){
+			if(text.result=="0"){
+				alert("保存成功");
+			}
+			if(text.result=="10"){
+				alert("保存成功");
+				$(_this).parent().parent().find("input:eq(0)").val(text.id);
+			}
+			else if(text.result=="1"){
+				alert("保存失败");
+			}
+			else if(text.result=="2"){
+				alert("参数不能为空");
+			}
+			else if(text.result=="3"){
+				alert("排序必须为数字");
+			}
+			else if(text.result=="-1"){
+				alert("系统错误");
+			}
+		}
+	});
+}
+
+function delete_award(_this){
+	if(confirm("是否确认删除？")){
+		var formId = $(_this).parent().parent().attr("id");
+		var params = $("#"+formId).serialize();
+		var id = $(_this).parent().parent().find("input:eq(0)").val();
+		if(id.length ==0){
+			removeNode(formId);
+		}else{
+			$.ajax({
+				url : "deleteAwardParam.do",
+				type : 'POST',
+				data : params,
+				dataType:"html",
+				cache : false,
+				success : function(text){
+					if(text=="OK"){
+						alert("删除成功");
+						removeNode(formId)
+					}
+					else if(text=="ERROR"){
+						alert("删除失败");
+					}
+				}
+			});
+		}
+	}
+}
+
+function removeNode(_node){
+	$("#"+_node).parent().parent().parent().nextAll().each(function(){
+		var i = $(this).find("div:eq(0)").find("span:eq(0)").html();
+		if(i>0){
+			i--;
+		}
+		$(this).find("div:eq(0)").find("span:eq(0)").html(i);
+		$(this).find("form:eq(0)").attr("id","award_params_form_"+i);
+	});
+	$("#"+_node).parent().parent().parent().remove();
+	rowNum--;
+}

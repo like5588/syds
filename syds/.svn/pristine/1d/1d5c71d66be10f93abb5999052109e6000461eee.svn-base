@@ -1,0 +1,47 @@
+package com.ty.photography.service.impl;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.common.RedisUtil;
+import com.ty.photography.dao.LaudLogMapper;
+import com.ty.photography.model.LaudLog;
+import com.ty.photography.service.ILaudService;
+
+@Service
+public class LaudServiceImpl implements ILaudService{
+
+	@Autowired
+	private LaudLogMapper laudLogMapper;
+	@Override
+	public String laud(String imgId, String userId) {
+		String result = "0";
+		String dateStr = CommonUtils.dateToString(new Date());
+		RedisUtil redisUtil = new RedisUtil();
+		long imgNum = redisUtil.scard(userId+"_"+dateStr);
+		if(imgNum < 10){
+			boolean exist = redisUtil.sismember(userId+"_"+dateStr, imgId);		//是否以点赞
+			if(exist){
+				result = "1";	//已点赞
+			}else{
+				redisUtil.sadd(userId+"_"+dateStr, imgId);	//保存点赞
+				redisUtil.incr("laud_"+imgId);
+				//保存日志
+				LaudLog laudLog = new LaudLog();
+				laudLog.setId(CommonUtils.getUUID());
+				laudLog.setPhotoId(imgId);
+				laudLog.setUserId(userId);
+				laudLog.setCreatTime(new Date());
+				laudLogMapper.insert(laudLog);
+			}
+		}else{
+			result = "2";	//超出10次
+		}
+		redisUtil.close();
+		return result;
+	}
+
+}

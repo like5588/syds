@@ -1,0 +1,71 @@
+<%@ page language="java"  pageEncoding="UTF-8"%>
+<%@ page import="com.ty.photography.monitor.TelecomInfo" %>
+<%@ page import="com.ty.photography.model.UserBindDto" %>
+<%@ page import="com.ty.photography.service.IUserBindInfoService" %>
+<%@ page import="org.springframework.web.context.ContextLoaderListener" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+int userNum = TelecomInfo.dxUserNum.intValue();
+int photoNum = TelecomInfo.dxPhotosNum.intValue();
+System.out.println(userNum+","+photoNum);
+/*
+String userId;
+String userName;
+IUserBindInfoService userBindInfoService = (IUserBindInfoService)ContextLoaderListener.getCurrentWebApplicationContext().getBean("userBindInfoServiceImpl");
+
+UserBindDto userBindDto = (UserBindDto)session.getAttribute("dx_userBindInfo");
+boolean flag = true;
+if(userBindDto==null || userBindDto.equals("")){
+	Cookie[] cookies = request.getCookies();
+	if(cookies != null){
+		for(Cookie cookie : cookies){
+			System.out.println(cookie.getName()+":"+cookie.getValue());
+			if(cookie.getName().equals("syds_login_id") && cookie.getValue() != null && !cookie.getValue().equals("")){
+				flag = false;
+				String loginId = cookie.getValue();
+				userBindDto = userBindInfoService.findUserBindDto(loginId, "0", "5");
+				if(userBindDto == null){
+					 response.setContentType("text/html; charset=utf-8");
+					 response.sendRedirect("www.baidu.com");
+				}else{
+					session.setAttribute("dx_userBindInfo", userBindDto);
+					userId = userBindDto.getUserId();
+					userName = userBindDto.getUserName();
+				}
+			}else if(cookie.getName().equals("syds_login_account") && cookie.getValue() != null && !cookie.getValue().equals("")){
+				userName = cookie.getValue();
+			}
+		}
+	}
+	if(flag){
+		 response.setContentType("text/html; charset=utf-8");
+		 response.sendRedirect("http://www.hicdma.com/views/pages/login.jsp?redirect=http://localhost:8080/syds/teleCom_index.jsp");
+	}
+}else{
+	userId = userBindDto.getUserId();
+	userName = userBindDto.getUserName();
+}
+*/
+%>
+<!--天翼4G 分享美好大图-->
+<div class="yg_top">
+	<div class="yg_topbutton"><img src="img/top_button.png"/>	
+    <span>参赛作品:<strong><%=photoNum%></strong>   参与人数:<strong><%=userNum%></strong></span>
+    </div>
+</div>
+
+<!--导航开始-->
+<div class="yg_menu_bg">
+	<div class="yg_menu">
+    	<ul>
+        	<li><a href="teleCom_index.jsp">首页</a></li>
+            <li><a href="teleCom_introduction.jsp">大赛介绍</a></li>
+            
+            <li style="width:120px; color:#959595">入选名单</li>
+        </ul>
+       <div class="yg_menu_login">
+       		<a href="#">登录</a>&nbsp;&nbsp;|&nbsp;
+            <a href="#">注册</a>
+       </div>
+    </div>
+</div>

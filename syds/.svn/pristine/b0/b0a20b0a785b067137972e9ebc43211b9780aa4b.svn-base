@@ -1,0 +1,149 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport"
+	content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/css/wx_common.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+/*--获取网页传递的参数--*/    
+function request(paras){         
+	var url = location.href;  
+	var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");        
+	var paraObj = {}         
+	for (i=0; j=paraString[i]; i++){        
+		paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length);       
+	}         
+	var returnValue = paraObj[paras.toLowerCase()];        
+	if(typeof(returnValue)=="undefined"){         
+		return "";        
+	}else{  
+		return returnValue;   
+	}  
+}
+
+$(document).ready(function(){
+	if(request("competitionType") == '5'){
+		alert(765);
+		$.ajax({
+			url: "${pageContext.request.contextPath}/getAreas.do", 
+			type: "post",
+			cache: false,  
+			dataType:"json",
+			success: function(msg){
+				$.each(msg, function (n, value) {  
+					var option = "<option value=\""+value.value+"\">" +value.value+ "</option>";  
+					$("#dx_area").append(option);
+				}); 
+			}
+		});
+	}
+	
+	$("#saveUserInfo").on("click",function(){
+		save(this);
+	});
+	
+});
+
+function save(_this){
+	$(_this).off("click");
+	down();
+	var name = $("#name").val();
+	var mobile = $("#mobile").val();
+	var param = $("#userInfo_form").serialize();
+	param += "&sourceId="+request("openid")+"&userSource="+request("userSource")+"&competitionType="+request("competitionType");
+	if(name.length <=0){
+		alert("请输入姓名！");
+		up();
+		return;
+	}
+	else if(mobile.length <=0){
+		alert("请输入手机号码！");
+		up();
+		return;
+	}
+	$.ajax({
+		type: "post", 
+		  data : param,
+		  url: "${pageContext.request.contextPath}/saveUser.do",  
+		  cache: false,  
+		  dataType:"json",
+	  	  success: function(msg) {
+	  		  if(msg.result=="0"){
+	  			  alert("保存成功");
+	  			  var referer = decodeURIComponent(request("referer")).replace("#","");
+	  			  window.location.href=referer;
+	  		  }else if(msg.result=="1" || msg.result=="-1"){
+	  			  alert("保存失败");
+	  		  }else if(msg.result=="2"){
+	  			  alert("参数不能为空");
+	  		  }else if(msg.result=="3"){
+	  			 //  alert("用户已存在");
+	  			  var referer = decodeURIComponent(request("referer")).replace("#","");
+	  			  window.location.href=referer;
+	  		  }
+	  		up();
+		  }
+	});
+}
+
+function up(){
+	  $("#saveUserInfo").css("background-color","#dd0000");
+	  $("#saveUserInfo").css("background-image","");
+	  $("#saveUserInfo").css("background-size","");
+	  $("#saveUserInfo").css("background-repeat","");
+	  $("#saveUserInfo").css("background-position","");
+	  $("#saveUserInfo").on("click",function(){
+			save(this);
+	  });
+}
+function down(){
+	$("#saveUserInfo").attr("disabled",true);   
+	$("#saveUserInfo").css("background-color","#a60000");
+	$("#saveUserInfo").css("background-image","url('../images/loading.gif')");
+	$("#saveUserInfo").css("background-size","26px 26px");
+	$("#saveUserInfo").css("background-repeat"," no-repeat");
+	$("#saveUserInfo").css("background-position","center center");
+}
+</script>
+<title>首次使用</title>
+</head>
+<body>
+	<div class="top">保存用户信息</div>
+	<div style="margin:10px;">
+		<form class="form-horizontal" id="userInfo_form">
+		  <div class="form-group">
+		    <div class="col-sm-offset-1 col-sm-10">
+		      <input type="text" class="form-control" id="name" name="name" placeholder="请输入姓名">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <div class="col-sm-offset-1 col-sm-10">
+		      <input type="text" class="form-control" id="mobile" name="mobile" placeholder="请输入手机号码">
+		    </div>
+		  </div>
+		  <c:if test="${param.userSource == '2'}">
+		  <div class="form-group">
+			<div class="col-sm-offset-1 col-sm-10">
+				<select class="form-control" id="dx_area" name="dxArea">
+					<option value="">---请选择---</option>
+				</select>
+			</div>
+		  </div>
+		  </c:if>
+		  <div class="search">
+				<a href="#" class="search-btn" id="saveUserInfo">
+				    保&nbsp;&nbsp;&nbsp;存
+				</a>
+		  </div>
+		</form>
+	</div>
+	<div align="center" style="font-size: 9px;margin-bottom: 5px;postion:absolute;">注：在法律允许范围内本活动最终解释权归天翼电信终端有限公司所有。</div>
+</body>
+</html>

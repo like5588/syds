@@ -1,0 +1,129 @@
+var params;
+var url = null;
+var url = null;
+$(document).ready(function() {
+	//ajax拦截session失效
+	$.ajaxSetup({   
+        contentType:"application/x-www-form-urlencoded;charset=utf-8",   
+        cache:false ,   
+        complete:function(data,TS){
+           if(data.responseText == "{\"sessionState\":\"timeout\"}"){
+        	 window.location.href = "${pageContext.request.contextPath}/login.jsp";  
+           }
+        }   
+    });
+
+	
+	$("#query").click(function(){
+		url = "queryUserInfo.do";
+		data = $("#query_form").serialize();
+		forAllpages();
+		
+	});
+	
+	function gotoPage(_page){
+		url = "queryUserInfo.do";
+		data = params+"&pageIndex="+_page;
+		forAllpages();
+	}
+	
+	function forAllpages(){
+		$.ajax({
+			url : url,
+			type : 'POST',
+			data : data,
+			dataType:"html",
+			cache : false,
+			success : function(text){
+				$("#content").html(text);
+			}
+		});
+	}
+	
+	$("#import").click(function(){
+		loadModal("app/user_import.jsp");
+	});
+	
+	$("#export").click(function(){
+		loadModal("app/user_export.jsp");
+	});
+	
+	$("#group_message").click(function(){
+		var data = $("#list_form").serialize();
+		var p = "";
+		$("input[type='checkbox']").each(function(){
+			if($(this).attr("id") != "checkTop"){
+				if($(this).prop("checked")){
+					p +=$(this).val();
+					return;
+				}
+			}
+		});
+		if(p.length <=0){
+			alert("请选择参与的用户！");
+			return;
+		}
+		$.ajax({  
+			  type: "post", 
+			  data : data,
+			  url: "toSendGroupPage.do",  
+			  cache: false,  
+		  	  success: function(msg) {
+		  		  $("#myModal").html(msg);
+		  		  $("#myModal").modal('show');
+			  }
+		  });
+	});
+	
+	
+	$("#toRaffling").click(function(){
+		loadModal("toRaffling.do");
+	});
+	
+	$("#raffling").click(function(){
+		var data = $("#draw_form").serialize();
+		$.ajax({  
+			  type: "post", 
+			  data : data,
+			  url: "raffling.do",  
+			  cache: false,  
+			  dataType:"json",
+		  	  success: function(msg) {
+		  		  if(msg.result="0"){
+		  			  alert("抽奖完成");
+		  		  }
+		  		  if(msg.result="1"){
+		  			  alert("参数不能为空");
+		  		  }
+		  		  if(msg.result="2"){
+		  			  alert("中奖人数必须为数字");
+		  		  }
+		  		  if(msg.result="-1"){
+		  			  alert("抽奖完成");
+		  		  }
+			  }
+		  });
+	});
+});
+
+function loadModal(_page){
+	$.ajax({  
+		  type: "get",  
+		  url: _page,  
+		  cache: false,  
+	  	  success: function(msg) {  
+	  		  $("#myModal").html(msg);
+	  		  $("#myModal").modal('show');
+		  }
+	  }); 
+}
+
+
+
+function openMessage(_id){
+	loadModal("toSendPage.do?userLotteryId="+_id);
+}
+
+function historyMessage(_id){
+	loadModal("userHistoryMessage.do?userId="+_id);
+}

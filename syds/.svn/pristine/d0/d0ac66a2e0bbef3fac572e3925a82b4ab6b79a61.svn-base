@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.JudgeLogonMapper"> 
+
+	<resultMap id="resultMap" type="com.ty.photography.model.JudgeLogon" >
+		
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="account" property="account" jdbcType="VARCHAR"/>
+		<result column="password" property="password" jdbcType="VARCHAR"/>
+		<result column="petname" property="petName" jdbcType="VARCHAR"/>
+		<result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+		<result column="email" property="email" jdbcType="VARCHAR"/>
+		<result column="dept" property="dept" jdbcType="VARCHAR"/>
+		<result column="judge_group_id" property="judgeGroupId" jdbcType="VARCHAR"/>
+		<result column="judge_role" property="judgeRole" jdbcType="TINYINT"/>
+		<result column="type" property="type" jdbcType="TINYINT"/>
+		<result column="competition_area" property="competitionArea" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+		<result column="comment" property="comment" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="TINYINT"/>
+		<result column="appr_from_date" property="apprFromDate" jdbcType="TIMESTAMP"/>
+		<result column="appr_to_date" property="apprToDate" jdbcType="TIMESTAMP"/>
+		<result column="distribution" property="distribution" jdbcType="TINYINT"/>
+		
+		
+	</resultMap>
+	
+	<select id="findByAccount" parameterType="string"  resultMap="resultMap">
+		select * from sy_judge_logon where account = #{value} and status=0
+	</select>
+
+	<select id="findById" parameterType="string" resultMap="resultMap">
+		select * from sy_judge_logon where id = #{id} and status=0
+	</select>
+	
+	<update id="updatePwd" parameterType="map">
+		update sy_judge_logon set password=#{newPassword} where id=#{id} and password=#{password}
+	</update>
+	
+	<update id="updateById" parameterType="com.ty.photography.model.JudgeLogon">
+		update sy_judge_logon
+		<set>
+			<if test="petName != null">
+				petname = #{petName} ,
+			</if>
+			<if test="mobile != null">
+				mobile = #{mobile} ,
+			</if>
+			<if test="email != null">
+				email = #{email} ,
+			</if>
+			<if test="dept != null">
+				dept = #{dept} ,
+			</if>
+			<if test="comment != null">
+				comment = #{comment}
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime}
+			</if>
+			<if test="distribution != null">
+				distribution = #{distribution}
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<select id="queryByConstraint" parameterType="com.ty.photography.model.JudgeLogon" resultMap="resultMap">
+		select * from sy_judge_logon
+		<where>
+			<if test="type != null">
+				type = #{type}
+			</if>
+			<if test="judgeRole != null">
+				and judge_role = #{judgeRole}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+			<if test="distribution != null">
+				and distribution = #{distribution}
+			</if>
+		</where>
+		<if test="judgeRole != null">
+			order by appr_from_date
+		</if>
+	</select>
+</mapper>

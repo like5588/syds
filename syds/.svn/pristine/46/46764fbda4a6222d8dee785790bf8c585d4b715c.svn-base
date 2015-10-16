@@ -1,0 +1,22 @@
+package com.ty.photography.dao;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.ty.photography.model.UserLottery;
+
+@Repository
+public interface UserLotteryMapper {
+	/**
+	 * 保存抽奖信息
+	 * @param userLottery
+	 */
+	public void insert(UserLottery userLottery);
+	/**
+	 * 条件查询
+	 * @param userLottery
+	 * @return
+	 */
+	public List<UserLottery> queryByCondition(UserLottery userLottery);
+}

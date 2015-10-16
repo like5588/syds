@@ -1,0 +1,127 @@
+package com.ty.photography.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.model.Dictionary;
+import com.ty.photography.model.UserBindDto;
+import com.ty.photography.model.UserBindInfo;
+import com.ty.photography.model.UserInfo;
+import com.ty.photography.monitor.TelecomInfo;
+import com.ty.photography.service.IDictionaryService;
+import com.ty.photography.service.IUserBindInfoService;
+import com.ty.photography.service.IUserInfoService;
+import com.ty.photography.service.IPhotoInfoService;
+
+@Controller
+public class UserInfoController {
+	
+	@Autowired
+	private IUserBindInfoService userBindInfoServiceImpl;
+	@Autowired
+	private IUserInfoService userInfoServiceImpl;
+	@Autowired
+	private IPhotoInfoService photoInfoServiceImpl;
+	@Autowired
+	private IDictionaryService dictionaryServiceImpl;
+	
+	@RequestMapping(value="saveUser.do",produces="text/plain;charset=UTF-8;")  
+	@ResponseBody
+	public String saveUser(String sourceId,String name,String mobile,String userSource,String dxArea,String competitionType,HttpServletRequest request){
+		String result;
+		if(StringUtils.isNotBlank(sourceId) && StringUtils.isNotBlank(name) && StringUtils.isNotBlank(mobile)){
+			if(CommonUtils.isNumeric(userSource) && CommonUtils.isNumeric(competitionType)){
+				try{
+					UserBindInfo userBindInfo = userBindInfoServiceImpl.findUserBindInfo(sourceId, userSource, competitionType);
+					if(userBindInfo == null){
+						UserInfo userInfo = new UserInfo();
+						String userId = CommonUtils.getUUID();
+						userInfo.setId(userId);
+						userInfo.setUserName(name);
+						userInfo.setMobile(mobile);
+						userBindInfo = userInfoServiceImpl.saveUser(userInfo,sourceId,userSource,competitionType,dxArea);
+						HttpSession session = request.getSession();
+						if(userSource.equals("1")){
+							session.setAttribute("wx_userBindInfo", userBindInfo);	//微信
+						}else if(userSource.equals("2")){
+							session.setAttribute("yx_userBindInfo", userBindInfo);	//易信
+						}
+						result = "{\"result\":\"0\",\"user_id\":\""+userId+"\"}";	//保存成功
+					}else{
+						result = "{\"result\":\"3\"}";	//用户已存在
+					}
+				}catch(Exception e){
+					result = "{\"result\":\"-1\"}";	//保存失败
+				}
+			}else{
+				result = "{\"result\":\"1\"}";	 //格式错误
+			}
+		}else{
+			result = "{\"result\":\"2\"}"; //参数为空
+		}
+		return result;
+	}
+	/**
+	 * 获取总参赛人数,   9 全国摄影大赛 ，
+	 * 获取总作品数		9 全国摄影大赛总作品数 ，
+	 * 测试地址：http://localhost/syds/getAllPerson.do
+	 * @return
+	 */
+	@RequestMapping(value="getDxHeadInfo.do",produces="text/plain;charset=UTF-8;")  
+	public String getDxHeadInfo(ModelMap model){
+		try{
+			int userNum = TelecomInfo.dxUserNum.intValue();
+			int photoNum = TelecomInfo.dxPhotosNum.intValue();
+			model.addAttribute("userNum", userNum+"");
+			model.addAttribute("photoNum", photoNum+"");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "../teleCom_header";
+	}
+	
+	/**
+	 * 获取电信所有赛区信息，在页面下拉框显示
+	 * @return
+	 */
+	@RequestMapping(value="getAreas.do",produces="text/plain;charset=UTF-8;")  
+	@ResponseBody
+	public String getAreas(){ 
+		List<Dictionary> dicList = TelecomInfo.getTelecomArea();  
+		List<Map<String,String>> areaList = new ArrayList<Map<String,String>>();
+		for(Dictionary dictionary : dicList){ 
+			Map<String,String> areaMap = new HashMap<String,String>();
+			areaMap.put("key", dictionary.getDateValue());
+			areaMap.put("value", dictionary.getDataShowValue());
+			areaList.add(areaMap);
+		}
+		return CommonUtils.toJsonStr(areaList);
+	}
+
+	@RequestMapping(value="validateLogin.do",produces="text/plain;charset=UTF-8;")  
+	@ResponseBody
+	public String validateLogin(HttpServletRequest request){
+		UserBindDto userBindDto = (UserBindDto)request.getSession().getAttribute("mh_userBindInfo");
+		if(userBindDto == null){
+			 userBindDto = (UserBindDto)request.getSession().getAttribute("dx_userBindInfo");
+			 if(userBindDto == null){
+				 return "{\"result\":\"1\"}";
+			 }
+		}
+		return "{\"result\":\"0\"}";
+	}
+	
+}

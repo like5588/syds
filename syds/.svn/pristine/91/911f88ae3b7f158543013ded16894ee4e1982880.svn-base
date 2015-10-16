@@ -1,0 +1,49 @@
+<%@ page language="java"  pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="${pageContext.request.contextPath}/css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+window.location.hash = "#title"; 
+</script>
+<title>上传照片</title>
+</head>
+
+<body>
+<%@include file="../../teleCom_header.jsp"%>
+<!--内容开始-->
+
+<div class="yg_33province_bg">
+
+<form action="" method="get">
+	<div class="yg_registered">
+    	<ul>
+        	<li>&nbsp;&nbsp;&nbsp;&nbsp;
+       	    <input name="" type="radio" value="" />单图</li>
+            <li></li>
+            <li>&nbsp;&nbsp;&nbsp;&nbsp;
+            <input name="" type="radio" value="" />组图</li>
+        </ul>
+        <ul>
+       	  <li>&nbsp;&nbsp;&nbsp;&nbsp;
+   	      <input name="" type="radio" value="" />手机组</li>
+            <li></li>
+            <li>&nbsp;&nbsp;&nbsp;&nbsp;
+            <input name="" type="radio" value="" />相机组</li>
+      </ul>
+
+    </div>
+    
+ 	<a href="#"><div class="yg_pro_button2"></div></a>
+   
+	
+
+</form>
+</div>
+
+
+<!--#include file="foot.html"-->
+</body>
+</html>

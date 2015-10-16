@@ -1,0 +1,171 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="com.ty.photography.model.UserBindDto" %>
+<%@ page import="com.ty.photography.service.IUserBindInfoService" %>
+<%@ page import="org.springframework.web.context.ContextLoaderListener" %>
+<%@ page import="com.ty.photography.common.CommonUtils" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link href="${pageContext.request.contextPath}/css/bigfoucs.css" rel="stylesheet" />
+<link href="${pageContext.request.contextPath}/css/mh_style.css" rel="stylesheet" />
+<script src="${pageContext.request.contextPath}/js/bigfoucs.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/js/lrtk.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.KinSlideshow-1.2.1.min.js" type="text/javascript"></script>
+
+<%
+String userId = null;
+String userName = null;
+IUserBindInfoService userBindInfoService = (IUserBindInfoService)ContextLoaderListener.getCurrentWebApplicationContext().getBean("userBindInfoServiceImpl");
+String base_url = CommonUtils.parseProperties("BASE_URL");
+/*
+Cookie cookie1 = new Cookie("syds_login_id","589d584ff2e542bda03b396efb61c9b1");
+cookie1.setMaxAge(30*24*3600);	
+response.addCookie(cookie1);
+Cookie cookie2 = new Cookie("syds_login_account",java.net.URLEncoder.encode("测试用户1","UTF-8"));
+cookie2.setMaxAge(30*24*3600);	
+response.addCookie(cookie2);
+  */
+UserBindDto userBindDto = (UserBindDto)session.getAttribute("mh_userBindInfo");
+boolean flag = true;
+if(userBindDto==null || userBindDto.equals("")){
+	Cookie[] cookies = request.getCookies();
+	if(cookies != null){
+		for(Cookie cookie : cookies){
+			if(cookie.getName().equals("syds_login_id") && cookie.getValue() != null && !cookie.getValue().equals("")){
+				flag = false;
+				String loginId = cookie.getValue();
+				userBindDto = userBindInfoService.findUserBindDto(loginId, "0", "9");
+				if(userBindDto == null){
+					userId = loginId;
+				}else{
+					session.setAttribute("mh_userBindInfo", userBindDto);
+					userId = userBindDto.getUserId();
+					userName = userBindDto.getUserName();
+				}
+			}else if(cookie.getName().equals("syds_login_account") && cookie.getValue() != null && !cookie.getValue().equals("")){
+				userName = cookie.getValue();
+			}
+		}
+	}
+/*	if(flag){
+		 response.setContentType("text/html; charset=utf-8");
+		 response.sendRedirect("http://www.hicdma.com/views/pages/login.jsp?redirect="+base_url+"/mh_index.jsp");
+	}*/
+}else{
+	userId = userBindDto.getUserId();
+	userName = userBindDto.getUserName();
+}
+%>
+<script type="text/javascript">
+var timeout         = 500;
+var closetimer		= 0;
+var ddmenuitem      = 0;
+
+function jsddm_open()
+{	jsddm_canceltimer();
+	jsddm_close();
+	ddmenuitem = $(this).find('ul').eq(0).css('visibility', 'visible');}
+
+function jsddm_close()
+{	if(ddmenuitem) ddmenuitem.css('visibility', 'hidden');}
+
+function jsddm_timer()
+{	closetimer = window.setTimeout(jsddm_close, timeout);}
+
+function jsddm_canceltimer()
+{	if(closetimer)
+	{	window.clearTimeout(closetimer);
+		closetimer = null;}}
+
+$(document).ready(function()
+{	$('#jsddm > li').bind('mouseover', jsddm_open);
+	$('#jsddm > li').bind('mouseout',  jsddm_timer);
+	
+	$("#logout").click(function(){
+		$.ajax({
+			url : "${pageContext.request.contextPath}/logout_mh.do",
+			type : 'POST',
+			data : "",
+			dataType:"json",
+			cache : false,
+			success : function(json) {
+				if(json.result ==0){
+					window.location.href="<%=base_url%>/mh_index.jsp";
+				}
+			}
+		});
+	});
+	
+});
+
+document.onclick = jsddm_close;
+  </script>
+ <!-- 轮播代码 开始 -->
+    <div class="banner">
+        <div class="inner">
+            <div class="menu">
+                <ul>
+                    <li class="active">
+                        <a href="javascript:;" class="png menu_home">
+                            <span class="hide"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="png menu_game">
+                            <span class="hide"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="png menu_video">
+                            <span class="hide"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="png menu_novel">
+                            <span class="hide"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="png menu_music">
+                            <span class="hide"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mask"></div>
+    </div>
+    <!-- 轮播代码 结束 -->
+    
+<!--导航开始-->
+<div class="yg_menu_bg" id="title">
+	<div class="yg_menu">
+    	<ul id="jsddm">
+        	<li><a href="${pageContext.request.contextPath}/mh_index.jsp">首页</a></li>
+            <li><a href="${pageContext.request.contextPath}/mh_introduction.jsp">大赛介绍</a></li>
+            <li><a href="javascript:void(0);">作品展示</a>
+            	<ul>
+                	<li><a href="${pageContext.request.contextPath}/app/mh/mh_myPhoto.jsp">我的作品</a></li>
+                    <li><a href="${pageContext.request.contextPath}/mh_exhibition.jsp?ListType=3">全部作品</a></li>
+                </ul>
+            
+            </li>
+            <li style="width:120px; color:#959595">入选名单</li>
+            <li><a href="${pageContext.request.contextPath}/mh_phone.jsp">机型推荐</a></li>
+            
+        </ul>
+        <div class="yg_menu_login" style="width:400px;">
+       		<%if(userId == null){ %>
+	       		<a href="http://www.hicdma.com/mh/views/pages/login.jsp?redirect=<%=base_url%>/mh_index.jsp">登录</a>&nbsp;&nbsp;|&nbsp;
+	            <a href="http://www.hicdma.com/mh/register.html?redirect=<%=base_url%>/mh_index.jsp">注册</a>
+            <%}else{ %>
+            	 <a style="text-decoration:none;"><%=java.net.URLDecoder.decode(userName,"UTF-8") %> ，您好！</a>&nbsp;&nbsp;|&nbsp;
+            	 <a href="javascript:void(0);" id="logout">注销</a>
+            <%} %>
+        </div>
+    </div>
+</div>
+<!--导航结束-->
+
+  <!--#include file ="foot.html"-->
+</body>
+</html>

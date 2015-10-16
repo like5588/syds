@@ -1,0 +1,14 @@
+package com.ty.photography.dao;
+
+import org.springframework.stereotype.Repository;
+
+import com.ty.photography.model.UserCoin;
+import com.ty.photography.model.UserCoinLog;
+
+@Repository
+public interface UserCoinMapper {
+	
+	public void saveOrUpdate(UserCoin userCoin);
+
+	public void saveLog(UserCoinLog userCoinLog);
+}

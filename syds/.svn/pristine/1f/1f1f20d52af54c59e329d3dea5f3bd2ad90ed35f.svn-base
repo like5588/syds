@@ -1,0 +1,13 @@
+package com.ty.photography.service;
+
+import com.ty.photography.model.JudgeLogon;
+
+public interface IJudgeLogonService {
+	/**
+	 * 根据账号获取账户信息
+	 * @param account
+	 * @return
+	 */
+	public JudgeLogon findByAccount(String account);
+
+}

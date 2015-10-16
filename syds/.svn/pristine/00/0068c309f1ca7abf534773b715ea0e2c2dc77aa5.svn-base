@@ -1,0 +1,6 @@
+APPID=wxbb68c06d3e54c494
+SECRET=59c8f1b8aae7d207ca011b7803772672
+BASE_URL=http://rockfocus.xicp.net/syds
+REDIRECT_URI=
+image_praise_file=d:/praise.error
+file_path=D:/eclipse/pro/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/syds/files

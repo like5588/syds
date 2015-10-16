@@ -1,0 +1,116 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+var allPerson = 0,allPhoto = 0;
+$(document).ready(function(){ 
+	
+	//读取电信参与人数和 总作品数
+		$.ajax({
+			url: "${pageContext.request.contextPath}/teleComPhotos.do",
+			type: "post",
+			cache: false,  
+			contentType: "application/json", 
+			dataType:"json",
+			success: function(msg){  
+				$.each(msg.info, function (n, key) {
+					allPerson += key.unum ;
+					allPhoto  += key.pnum ;
+				}); 
+				document.getElementById("pnum").innerText = allPhoto;
+				document.getElementById("unum").innerText = allPerson;
+			}
+		});
+});
+</script>
+<title>大赛介绍</title>
+</head>
+
+<body>
+
+<%@include file="header_teleCom.jsp"%>
+<!--内容开始-->
+
+<div class="yg_33province_bg">
+	<div class="yg_introduction">
+    	<ul>
+        	<li>        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2013年由中国电信集团工会主办的天翼手机（ 2013 ）中国电信员工摄影
+大赛完美收官，活动期间从全国各省收到作品3000余幅，评选出一、二、三及
+优秀作品147幅。<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2014年中国电信集团工会喜迎第二届，活动期间从全国各省收到作品8万
+余幅，电信员工通过易信、天翼手机网平台上传自己的手机摄影作品，评选出
+一、二、三及优秀作品200幅,2015中国电信员工摄影大赛”，旨在鼓励，展示
+中国电信员工的精神风貌，同时体验天翼4G带来的美好生活。</li>
+	<li><img src="img/intro_img.jpg" /></li>
+        </ul>
+        
+        <ul>
+        	<li><span class="yg_introduction_title"><img src="img/intro_img1.png" /></span><span class="yg_introduction_text" style="font-size:26px; line-height:98px;">天翼4G，<span style="color:#F00;">分享美好！</span></span></li>
+            
+            <li><span class="yg_introduction_title"><img src="img/intro_img2.png" /></span><span class="yg_introduction_text"  style="line-height:98px;">中国电信员工</span></li>
+        </ul>
+        
+             
+        <ul>
+        	<li><span class="yg_introduction_title"><img src="img/intro_img3.png" /></span><span class="yg_introduction_text" ><br />主办：中国电信集团工会、中国电信摄影协会<br />
+承办：天翼电信终端有限公司</span></li>
+            
+            <li><span class="yg_introduction_title"><img src="img/intro_img4.png" /></span><span class="yg_introduction_text" ><br />易信、天翼手机网<br />
+大赛官方网站平台：http://www.hicdma.com
+</span></li>
+        </ul>
+        
+              
+        <ul>
+        	<li><span class="yg_introduction_title"><img src="img/intro_img5.png" /></span><span class="yg_introduction_text"  style="line-height:98px;">2015年8月1日-2015年09月10日</span></li>
+            
+            <li><span class="yg_introduction_title"><img src="img/intro_img6.png" /></span><span class="yg_introduction_text" style="line-height:98px;" >2015年9月
+</span></li>
+        </ul>
+        
+        <ul>
+        	<li style="width:980px;">
+            	<span class="yg_introduction_title"><img src="img/intro_img8.png" /></span><span class="yg_introduction_text" style="width:850px; height:auto" >( 1 )此次大展面向全国的手机用户征稿，作者可关注影展易信公众号（易信公众号：天翼手机全国摄影大展）或登陆天翼手机网（http://www.hicdma.com）“2014“天翼手机杯”全国手机摄影大展”征稿专区进行投稿；<br />
+( 2 )参加本次大展活动的用户须根据页面要求进行个人信息注册，如因个人信息录入有误带来的损失均有个人承担；<br />
+( 3 )投稿作品必须为手机拍摄作品，创作时间不限，彩色、黑白均可，单幅、组照不限（组照每组4-8幅）；<br />
+( 4 )参展作品文件格式为jpg或png，在线提交的作品文件量不大于5M，图片长边边长不大于2000像素；<br />
+( 5 )鼓励纪录类作品，但不排除用艺术手段进行创作的作品；<br />
+( 6 )本次大展入选证书可作为加入中国摄影家协会条件之一；<br />
+( 7 )所有参展者上传的照片和文字不得违反中华人民共和国法律法规、违背公共秩序和善良风俗以及 道德标准之内容，不得上传具有色情、暴力等不健康内容的照片和文字，一经发现，主办方将不予 上传并有权提交相关部门处理；<br />
+( 8 )参展者须拥有照片的著作权，并获得参展照片中所包含人物肖像权的使用许可以及其它法律规定的许可，同时须保证上传的照片不侵犯任何第三人的包括但不限于著作权、肖像权、名誉权、隐私权、 商标权、商号权等法律保护的各种权利和利益；<br /> 
+( 9 )参展作品须为本人独立完成的原创作品，不得抄袭、拷贝、仿冒；<br />
+( 10 )作品入选后，组委会将统一调取原始数据文件。请得到通知的作者务必在规定时间内提交作品边长不小于1500像素的带有拍摄数据的入选作品文件，及作品原图。前述文件未按期提交的，视为自动放弃入选资格；<br />
+( 11 )所有入选的作品，主办单位有权将其用于大展宣传活动、获奖公告、作品集、作品展、大展广告、手机壁纸、网络传播（如：微博、微信、I天翼社区等） 、促销礼品等各种商业活动，不再另付稿酬。并同意主办方在公布和使用参展作品前对其进行必要的编辑；<br />
+( 12 )本次活动最终解释权归主办单位，参加本次征集活动即视为同意并遵守本次征集活动各项规则。凡不符合征稿要求的作品，一经发现将一律取消参评资格。</span>
+            
+            </li>
+        </ul>
+		
+          <ul>
+        	<li style="width:980px;">
+            	<span class="yg_introduction_title"><img src="img/intro_img9.png" /></span><span class="yg_introduction_text" style="width:850px; height:auto; line-height:98px;" >4008 891 189转9</span>
+            
+            </li>
+        </ul>
+
+        
+    </div>
+    
+
+
+</div>
+
+<!--内容开始结束-->
+
+<%@include file="foot_teleCom.jsp"%>
+</div>
+
+
+
+</body>
+</html>

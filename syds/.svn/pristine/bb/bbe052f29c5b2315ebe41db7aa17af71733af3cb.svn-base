@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/signin.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/page/login.js"></script>
+<title>审核管理</title>
+</head>
+<body>
+    <div class="container">
+      <div class="form-signin" style="padding-bottom: 0px;">
+      <div class="alert alert-warning alert-dismissible" role="alert" id="error_div" style="display:none;max-width: 300px;margin: 0 auto;">
+		  <button type="button" class="close" aria-label="Close" id="error_close"><span aria-hidden="true">&times;</span></button>
+		  <span id="error_info"></span>
+	  </div>
+      </div>
+      <form class="form-signin" role="form" id="form1" style="padding-top: 0px;" method="post">
+        <h2 class="form-signin-heading">请登录</h2>
+        <input id="userName" name="userName" type="text" class="form-control" placeholder="请输入账号" required autofocus>
+        <input id="password" name="password" type="password" class="form-control" placeholder="密码" required>
+		<input id="randVal" name="randVal" type="text" class="form-control" style="width: 55%;" placeholder="验证码" required>
+		<img id="img" src="randImageServlet" style="width: 43%; height: 44px;border-radius: 4px;cursor:pointer;" onclick="refresh(this);">
+        <input id="logon" class="btn btn-lg-6 btn-primary btn-block" type="button" value="登录">
+      </form>
+    </div>
+  </body>
+  </html>

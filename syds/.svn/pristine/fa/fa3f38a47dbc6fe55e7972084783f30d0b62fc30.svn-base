@@ -1,0 +1,42 @@
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>天翼4G 分享美好档</title>
+<link href="css/bigfoucs.css" rel="stylesheet" />
+    <link href="css/mh_style.css" rel="stylesheet" />
+    <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="js/bigfoucs.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/jquery.1.4.2.min.js"></script>
+<script type="text/javascript" src="js/lrtk.js"></script>
+
+</head>
+
+<body>
+
+ <%@include file="mh_top.jsp"%>
+    
+    <div class="yg_33province_bg">
+    	<div class="mh_phone">
+        	<ul>
+            	<li><a href="https://detail.tmall.com/item.htm?spm=a1z10.1-b.w7137786-6569117578.1.X07BVc&amp;id=41740960494&amp;rn=2199628240878d5ac2d8a51afef13b2e&amp;abbucket=19&amp;sku_properties=10004:709990523;5919063:6536025"  target="_blank"><img src="mh_images/phone_1.jpg" /></a></li>
+                <li><a href="https://detail.tmall.com/item.htm?spm=a1z10.1-b.w7137786-6569117578.2.YaLzeq&amp;id=520364290577&amp;sku_properties=5919063:6536025;12304035:75366695;122216431:27772" target="_blank"><img src="mh_images/phone_2.jpg" /></a></li>
+            </ul>
+            
+            <ul>
+            	<li><a href="https://detail.tmall.com/item.htm?spm=a1z10.1-b.w7137786-6569117578.3.YaLzeq&amp;id=45435629417&amp;sku_properties=5919063:6536025;12304035:75366695;122216431:27772" target="_blank"><img src="mh_images/phone_3.jpg" /></a></li>
+                <li><a href="https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-5500409955.76.8jqMBE&amp;id=41776513151&amp;rn=3940546ccb982013c28facbe7b3cbb37&amp;abbucket=7&amp;sku_properties=10004:709990523;5919063:6536025" target="_blank"><img src="mh_images/phone_4.jpg" /></a></li>
+            </ul>
+            
+            <ul>
+            	<li><a href="https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-5500409955.96.8jqMBE&amp;id=40826754432&amp;rn=3940546ccb982013c28facbe7b3cbb37&amp;abbucket=7&amp;sku_properties=10004:681892378;5919063:6536025;12304035:48072" target="_blank"><img src="mh_images/phone_5.jpg" /></a></li>
+                <li><a href="https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-5500409955.101.8jqMBE&amp;id=44575157648&amp;rn=3940546ccb982013c28facbe7b3cbb37&amp;abbucket=7&amp;sku_properties=5919063:6536025;12304035:116177;122216431:27772" target="_blank"><img src="mh_images/phone_6.jpg" /></a></li>
+            </ul>
+        </div>
+    
+    </div>
+     <!--#include file ="foot.html"-->
+</body>
+</html>

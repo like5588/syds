@@ -1,0 +1,87 @@
+package com.ty.photography.controller.system;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.model.JudgeLogon;
+import com.ty.photography.service.IJudgeLogonService;
+
+@Controller
+public class JudgeLogonController {
+	private Logger log = LoggerFactory.getLogger(JudgeLogonController.class);
+	@Autowired
+	private IJudgeLogonService judgeLogonServiceImpl;
+	/**
+	 * 登录认证
+	 * @param userName
+	 * @param password
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="logon.do",produces="text/plain;charset=UTF-8;")  
+	@ResponseBody
+	public String logon(@RequestParam("userName") String userName,@RequestParam("password") String password,
+			@RequestParam("randVal") String randVal,HttpServletRequest request,HttpServletResponse response){
+		Map<String,String> resultMap = new HashMap<String,String>();
+		try{
+			if(StringUtils.isBlank(userName) || StringUtils.isBlank(password) || StringUtils.isBlank(randVal)){
+				resultMap.put("result", "3"); //参数为空
+			}else{
+				String imgRand  = (String)request.getSession().getAttribute("rand");
+				if (imgRand == null || !imgRand.equalsIgnoreCase(randVal)) {
+					resultMap.put("result", "2");	//验证码错误
+				}else{
+					JudgeLogon judgeLogon = judgeLogonServiceImpl.findByAccount(userName);
+					if(judgeLogon == null){
+						resultMap.put("result", "1");	//账号不存在
+					}else{
+						if(judgeLogon.getPassword().equals(password)){
+							resultMap.put("result", "0");
+							request.getSession().setAttribute("judge", judgeLogon);
+							if(judgeLogon.getType().equals(0)){
+								resultMap.put("redirect", "sys/vetting.do");
+							}else if(judgeLogon.getType().equals(5)){
+								resultMap.put("redirect", "app/sys/dx_daipingxuan.jsp");
+							}else if(judgeLogon.getType().equals(9)){
+								resultMap.put("redirect", "sys/all_pingxuan.do");
+							}
+						}else{
+							resultMap.put("result", "1");	//密码错误
+						}
+					}
+				}
+			}
+		}catch(Exception e){
+			resultMap.put("result", "-1");
+			log.error("--- user login has error --",e);
+		}
+		return CommonUtils.toJsonStr(resultMap);
+	}
+
+	/**
+	 * 注销
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="logout.do",produces="text/plain;charset=UTF-8;") 
+	@ResponseBody
+	public String logout(HttpServletRequest request,HttpServletResponse response){
+		request.getSession().setAttribute("judge", null);
+		request.getSession().removeAttribute("judge");
+		request.getSession().invalidate();
+		return "{\"result\":\"0\"}";
+	}
+}

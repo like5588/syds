@@ -1,0 +1,115 @@
+package com.ty.photography.controller.mobile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.common.UrlUtil;
+
+
+@Controller
+public class YxAuthController {
+	
+	@RequestMapping(value="/yx_redirectInfo.do",produces="text/plain;charset=UTF-8;")
+	@ResponseBody
+	public void redirectInfo(String code ,String state,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		String appId=CommonUtils.parseProperties("YX_APPID");
+		String secret=CommonUtils.parseProperties("YX_SECRET");
+		String url = "https://api.yixin.im/sns/oauth2/access_token?appid="+appId+"&secret="+secret+"&code="+code+"&grant_type=authorization_code";
+		String result = UrlUtil.httpsRequest(url, "GET", null);
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String,String> map = mapper.readValue(result, HashMap.class);
+		if(state != null && state.equals("0")){
+			response.sendRedirect(CommonUtils.parseProperties("BASE_URL")+"/"+map.get("openid")+"/2/5/allPhotos.do");
+		}
+	}
+
+	public static String getAccessToken(String appId,String secret){
+		String url = "https://api.yixin.im/cgi-bin/token?grant_type=client_credential&appid="
+				+ appId + "&secret=" + secret;
+		String str = UrlUtil.httpsRequest(url, "GET", null);
+		Map<String,String> result = CommonUtils.parseJson(str, Map.class);
+		System.out.println(result.get("access_token"));
+		return result.get("access_token");
+	}
+	
+	public static Map<String,Object> getMenu(){
+		String baseUrl = CommonUtils.parseProperties("BASE_URL");
+		Map<String,Object> parent = new HashMap<String,Object>();
+		Map<String,Object> child = new HashMap<String,Object>();
+		List<Map<String,Object>> listC = new ArrayList<Map<String,Object>>();
+		
+		child.put("type", "click");
+		child.put("name", "我要上传");
+		child.put("key", "iwantupload");
+		listC.add(child);
+		
+		Map<String,Object> subMap = new HashMap<String,Object>();
+		List<Map<String,Object>> subButton = new ArrayList<Map<String,Object>>();
+		Map<String,Object> sub1 = new HashMap<String,Object>();
+		sub1.put("type", "click");
+		sub1.put("name", "我的作品");
+		sub1.put("key", "myPhotos");
+		subButton.add(sub1);
+		sub1 = new HashMap<String,Object>();
+		sub1.put("type", "view");
+		sub1.put("name", "更多作品");
+		sub1.put("url", "http://open.plus.yixin.im/connect/oauth2/authorize?appid="+CommonUtils.parseProperties("YX_APPID")+"&redirect_uri=http%3A%2F%2Fyxhd.hicdma.com%2Fsyds%2Fyx_redirectInfo.do&response_type=code&scope=snsapi_base&state=0#yixin_redirect");
+		subButton.add(sub1);
+		subMap.put("name", "作品展示");
+		subMap.put("sub_button", subButton);
+		listC.add(subMap);
+		
+		Map<String,Object> subMap2 = new HashMap<String,Object>();
+		List<Map<String,Object>> subButton2 = new ArrayList<Map<String,Object>>();
+		Map<String,Object> sub2 = new HashMap<String,Object>();
+		sub2.put("type", "view");
+		sub2.put("name", "大赛介绍");
+		sub2.put("url", CommonUtils.parseProperties("BASE_URL")+"/dx_introduce.jsp");
+		subButton2.add(sub2);
+		sub2 = new HashMap<String,Object>();
+		sub2.put("type", "view");
+		sub2.put("name", "征稿细则");
+		sub2.put("url", CommonUtils.parseProperties("BASE_URL")+"/dx_rule.jsp");
+		subButton2.add(sub2);
+		subMap2.put("name", "大赛介绍");
+		subMap2.put("sub_button", subButton2);
+		listC.add(subMap2);
+
+		parent.put("button", listC);
+		return parent;
+	}
+	
+	
+	public static void main(String args[]) throws JsonGenerationException, JsonMappingException, IOException{
+//		System.out.println(java.net.URLEncoder.encode("http://42.99.0.141:9888/dyjl_ext/redirectInfo.do","UTF-8"));
+		String appId=CommonUtils.parseProperties("YX_APPID");
+		String secret=CommonUtils.parseProperties("YX_SECRET");
+		
+		Map<String,Object> menu = getMenu();
+		String URL = "https://api.yixin.im/cgi-bin/menu/create?access_token="+getAccessToken(appId,secret);
+		String content = CommonUtils.toJsonStr(menu);
+		System.out.println(content);
+		System.out.println(UrlUtil.httpsRequest(URL, "POST", content));
+		
+//		String URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=iNWlocDhR8uBGYlX0wvlru3ayDfSmgxyKdWhlwwEnKDovdm65ILSqU5l2qxPgVgvhduI6lHReIkVhUGbnZ1wsBQzsp5R9RlZZYs58c6Y2bE&type=jsapi";
+//		System.out.println(UrlUtil.httpsRequest(URL, "GET", null));
+		
+	}
+	
+	
+
+}

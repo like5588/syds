@@ -1,0 +1,131 @@
+package com.ty.photography.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.model.UserBindDto;
+import com.ty.photography.model.UserBindInfo;
+import com.ty.photography.model.UserInfo;
+import com.ty.photography.service.IUserBindInfoService;
+import com.ty.photography.service.IUserInfoService;
+
+@Controller
+public class WebsiteController {
+	private Logger log = LoggerFactory.getLogger(WebsiteController.class);
+	@Autowired
+	private IUserBindInfoService userBindInfoServiceImpl;
+	@Autowired
+	private IUserInfoService userInfoServiceImpl;
+	
+	@RequestMapping(value="/dx/upload.do",produces="text/plain;charset=UTF-8;")  
+	public String upload(){
+		return "dx/upload";
+	}
+	
+	@RequestMapping(value="/mh/upload.do",produces="text/plain;charset=UTF-8;")  
+	public String mhUpload(){
+		return "mh/upload";
+	}
+	
+	@RequestMapping(value="pageSaveUser.do",produces="text/plain;charset=UTF-8;")  
+	@ResponseBody
+	public String saveUser(String name,String mobile,String dxArea,String p,HttpServletRequest request){
+		Map<String,String> result = new HashMap<String,String>();
+		if(StringUtils.isNotBlank(name) && StringUtils.isNotBlank(mobile)){
+			if(StringUtils.isBlank(p)){
+				p="9";
+			}else if(!p.equals("5") && !p.equals("9")){
+				p="9";
+			}
+			try{
+				String sourceId = (String)request.getSession().getAttribute("sourceId");
+				UserBindDto userBindDto = userBindInfoServiceImpl.findUserBindDto(sourceId, "0", p);
+				if(userBindDto == null){
+					UserInfo userInfo = new UserInfo();
+					String userId = CommonUtils.getUUID();
+					userInfo.setId(userId);
+					userInfo.setUserName(name);
+					userInfo.setMobile(mobile);
+					UserBindInfo userBindInfo = userInfoServiceImpl.saveUser(userInfo,sourceId,"0",p,dxArea);
+					userBindDto = new UserBindDto();
+					userBindDto.copy(userBindInfo);
+					userBindDto.setUserName(name);
+					HttpSession session = request.getSession();
+					if(p.equals("5")){
+						session.setAttribute("dx_userBindInfo", userBindDto);	//电信门户
+					}else{
+						session.setAttribute("mh_userBindInfo", userBindDto);	//全国
+					}
+					result.put("result", "0");	//保存成功
+				}else{
+					result.put("result", "3");	//用户已存在
+				}
+			}catch(Exception e){
+				result.put("result", "-1");	//保存失败
+			}
+		}else{
+			result.put("result", "2"); //参数为空
+		}
+		return CommonUtils.toJsonStr(result);
+	}
+	
+	/**
+	 * 注销
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="logout_dx.do",produces="text/plain;charset=UTF-8;") 
+	@ResponseBody
+	public String logout_dx(HttpServletRequest request,HttpServletResponse response){
+		request.getSession().setAttribute("dx_userBindInfo", null);
+		Cookie cookie = new Cookie("syds_login_id",null);
+		cookie.setDomain(".hicdma.com");
+		cookie.setPath("/"); 
+		cookie.setMaxAge(0);	
+		response.addCookie(cookie);
+		Cookie cookie1 = new Cookie("syds_login_account",null);
+		cookie1.setDomain(".hicdma.com");
+		cookie1.setPath("/"); 
+		cookie1.setMaxAge(0);	
+		response.addCookie(cookie1);
+		return "{\"result\":\"0\"}";
+	}
+	
+	/**
+	 * 注销
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="logout_mh.do",produces="text/plain;charset=UTF-8;") 
+	@ResponseBody
+	public String logout_mh(HttpServletRequest request,HttpServletResponse response){
+		request.getSession().setAttribute("mh_userBindInfo", null);
+		Cookie cookie = new Cookie("syds_login_id",null);
+		cookie.setDomain(".hicdma.com");
+		cookie.setPath("/"); 
+		cookie.setMaxAge(0);	
+		response.addCookie(cookie);
+		Cookie cookie1 = new Cookie("syds_login_account",null);
+		cookie1.setDomain(".hicdma.com");
+		cookie1.setPath("/"); 
+		cookie1.setMaxAge(0);	
+		response.addCookie(cookie1);
+		return "{\"result\":\"0\"}";
+	}
+}

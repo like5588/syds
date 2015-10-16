@@ -1,0 +1,20 @@
+
+body{font-size: 14px;}
+.top{background-color: #dc030c; height: 44px;text-align: center;padding-top: 10px;font-size:16px;color:white;text-align: center;}
+.search {margin: 1px 10px 10px 10px;text-align: center;}
+a.search-btn:hover,a.search-btn:active{ 
+	background: #a60000;color:#fff;text-decoration: none; }
+a.search-btn{ 
+	text-decoration: none; 
+	display:inline-block; 
+	width:90%;
+	background:#dd0000;
+	border:1px solid #dd0000; 
+	color:#fff; 
+	text-align:center;
+	height:44px; 
+	line-height:44px;
+	-moz-border-radius: 3px;      /* Gecko browsers */    
+	-webkit-border-radius: 3px;   /* Webkit browsers */   
+	border-radius:3px;
+	font-size:20px;}

@@ -1,0 +1,123 @@
+package com.ty.photography.monitor;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.common.RedisUtil;
+import com.ty.photography.model.Dictionary;
+import com.ty.photography.service.IDictionaryService;
+
+/**
+ * 单例类
+ * @author liyan
+ *
+ */
+public class LotteryInfo{
+	
+	private static LotteryInfo instance;
+	
+	private IDictionaryService dictionaryService ;
+	
+	private LotteryInfo(IDictionaryService dictionaryService){
+		this.dictionaryService = dictionaryService;
+	}
+	
+	public synchronized static LotteryInfo getInstance(IDictionaryService dictionaryService){
+		if(instance == null){
+			instance = new LotteryInfo(dictionaryService);
+		}
+		return instance;
+	}
+	
+	public void init() {
+		List<Dictionary> probabilityList = dictionaryService.findByType("lottery_probability");
+		List<Dictionary> numList = dictionaryService.findByType("lottery_num");
+		RedisUtil redisUtil = new RedisUtil();
+		for (Dictionary dictionary : probabilityList) {
+			redisUtil.set(dictionary.getId(), dictionary.getDateValue());
+		}
+		for (Dictionary num : numList) {
+			redisUtil.set(num.getId(), num.getDateValue());
+		}
+		Dictionary dictionary = dictionaryService.findById("lottery_days");
+		redisUtil.set("lottery_days", dictionary.getDateValue());
+		redisUtil.set("lottery_start", CommonUtils.dateToString(dictionary.getCreateTime()));
+		dictionary = dictionaryService.findById("lottery_times");
+		redisUtil.set("lottery_times", dictionary.getDateValue());
+		redisUtil.close();
+	}
+	/**
+	 * -2超过最大次数 ， -1 不再抽奖时间 ，0未中奖，1一等奖，2二等奖，3三等奖，4四等奖
+	 * @param userId
+	 * @return
+	 */
+	public synchronized int lottery(String userId){
+		int result = 0;
+		RedisUtil redisUtil = new RedisUtil();
+		Date fromDate = CommonUtils.stringToDate(redisUtil.get("lottery_start"));
+		int duration = 0;
+		String days = redisUtil.get("lottery_days");
+		if(days !=null && CommonUtils.isNumeric(days)){
+			duration = Integer.parseInt(days);
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(fromDate);
+		cal.add(Calendar.DAY_OF_YEAR, duration);
+		Date now = new Date();
+		String lotteryTimes = redisUtil.hget("lottery::"+CommonUtils.dateToString(new Date()), userId);
+		if(lotteryTimes == null){
+			lotteryTimes = "0";
+		}
+		int times = Integer.parseInt(lotteryTimes);
+		if(times < 5){
+			//是否在抽奖时间范围内
+			if(now.after(fromDate) && now.before(cal.getTime())){
+				Random ran = new Random();
+				//当前已中奖数
+				int lottery_current_1 = 0,lottery_current_2 = 0,lottery_current_3 = 0,lottery_current_4 = 0;
+				if(redisUtil.get("lottery_current_1") != null){
+					lottery_current_1 = Integer.parseInt(redisUtil.get("lottery_current_1"));
+				}
+				if(redisUtil.get("lottery_current_2") != null){
+					lottery_current_2 = Integer.parseInt(redisUtil.get("lottery_current_2"));
+				}
+				if(redisUtil.get("lottery_current_3") != null){
+					lottery_current_3 = Integer.parseInt(redisUtil.get("lottery_current_3"));
+				}
+				if(redisUtil.get("lottery_current_4") != null){
+					lottery_current_4 = Integer.parseInt(redisUtil.get("lottery_current_4"));
+				}
+				//最多中奖数
+				int lottery_num_1 = Integer.parseInt(redisUtil.get("lottery_num_1"));
+				int lottery_num_2 = Integer.parseInt(redisUtil.get("lottery_num_2"));
+				int lottery_num_3 = Integer.parseInt(redisUtil.get("lottery_num_3"));
+				int lottery_num_4 = Integer.parseInt(redisUtil.get("lottery_num_4"));
+				double y = ran.nextDouble()*100;
+				if(y<Double.parseDouble(redisUtil.get("lottery_probability_1")) && lottery_current_1<lottery_num_1){
+					result = 1;
+					redisUtil.incr("lottery_current_1");
+				}else if(y>=Double.parseDouble(redisUtil.get("lottery_probability_1")) && y<Double.parseDouble(redisUtil.get("lottery_probability_2")) && lottery_current_2<lottery_num_2){
+					result = 2;
+					redisUtil.incr("lottery_current_2");
+				}else if(y>=Double.parseDouble(redisUtil.get("lottery_probability_2")) && y<Double.parseDouble(redisUtil.get("lottery_probability_3")) && lottery_current_3<lottery_num_3){
+					result = 3;
+					redisUtil.incr("lottery_current_3");
+				}else if(y>=Double.parseDouble(redisUtil.get("lottery_probability_3")) && y<Double.parseDouble(redisUtil.get("lottery_probability_4")) && lottery_current_4<lottery_num_4){
+					result = 4;
+					redisUtil.incr("lottery_current_4");
+				}
+			}else{
+				result = -1;
+			}
+			redisUtil.hincrby("lottery::"+CommonUtils.dateToString(new Date()), userId, 1);
+		}else{
+			result = -2;
+		}
+		redisUtil.close();
+		return result;
+	}
+
+}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.DictionaryMapper"> 
+
+	<resultMap id="resultMap" type="com.ty.photography.model.Dictionary" >
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="data_type" property="dataType" jdbcType="VARCHAR"/>
+		<result column="data_value" property="dateValue" jdbcType="VARCHAR"/>
+		<result column="data_showvalue" property="dataShowValue" jdbcType="VARCHAR"/>
+		<result column="order_number" property="orderNumber" jdbcType="INTEGER"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+		<result column="status" property="status" jdbcType="TINYINT"/>
+	</resultMap>
+
+	<select id="findByType" parameterType="string" resultMap="resultMap">  
+	    SELECT * FROM sy_dictionary where data_type = #{value} order by order_number
+	</select>
+	
+	<select id="findById" parameterType="string" resultMap="resultMap">  
+	    SELECT * FROM sy_dictionary where id = #{value}
+	</select>
+	
+	<update id="updateValue" parameterType="com.ty.photography.model.Dictionary">
+		update sy_dictionary 
+		<set>
+			<if test="dateValue != null">
+				data_value = #{dateValue} ,
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime}
+			</if>
+		</set>
+		where data_type=#{dataType} and data_showvalue = #{dataShowValue}
+	</update>
+	
+	<update id="update" parameterType="com.ty.photography.model.Dictionary">
+		update sy_dictionary 
+		<set>
+			<if test="dateValue != null">
+				data_value = #{dateValue} ,
+			</if>
+			<if test="dataShowValue != null">
+				data_showvalue = #{dataShowValue} ,
+			</if>
+			<if test="orderNumber != null">
+				order_number = #{orderNumber}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<insert id="save" parameterType="com.ty.photography.model.Dictionary">
+		insert into sy_dictionary (id,data_type,data_value,data_showvalue,order_number,create_time,modify_time,status)
+		values (#{id},#{dataType},#{dateValue},#{dataShowValue},#{orderNumber},#{createTime},#{modifyTime},#{status})
+	</insert>
+	
+	<delete id="deleteById" parameterType="string">
+		delete from sy_dictionary where id=#{value}
+	</delete>
+</mapper>

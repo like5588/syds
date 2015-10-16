@@ -1,0 +1,79 @@
+package com.ty.photography.filter;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.model.UserBindInfo;
+import com.ty.photography.service.IUserBindInfoService;
+
+@WebFilter(filterName="wxAuthenticateFilter",urlPatterns={"/dx/*"})
+public class DXAuthenticateFilter implements Filter{
+	
+	private IUserBindInfoService userBindInfoServiceImpl;
+	private static String baseUrl;
+
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		ServletContext context = filterConfig.getServletContext();  
+		ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(context);  
+		userBindInfoServiceImpl = (IUserBindInfoService)ctx.getBean("userBindInfoServiceImpl");
+		baseUrl = CommonUtils.parseProperties("BASE_URL");
+	}
+
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		HttpSession session = httpRequest.getSession();
+		UserBindInfo userBindInfo = (UserBindInfo)session.getAttribute("dx_userBindInfo");
+		if(userBindInfo==null || userBindInfo.equals("")){
+			Cookie[] cookies = httpRequest.getCookies();
+    		boolean flag = true;
+    		if(cookies != null){
+    			for(Cookie cookie : cookies){
+    				if(cookie.getName().equals("syds_login_id") && cookie.getValue() != null && !cookie.getValue().equals("")){
+    					String loginId= cookie.getValue();
+    					userBindInfo = userBindInfoServiceImpl.findUserBindInfo(loginId, "0", "5");
+    					if(userBindInfo == null){
+    						String referer = httpRequest.getRequestURL().toString();
+    						if(httpRequest.getQueryString() !=null && !httpRequest.getQueryString().equals("")){
+    							referer = referer + "?" + httpRequest.getQueryString();
+    						}
+    						HttpServletResponse httprResponse = (HttpServletResponse)response;
+    						httprResponse.sendRedirect(baseUrl+"/app/mh_new_user.jsp?sourceId="+loginId+
+    								"&userSource=0&competitionType=5&referer="+java.net.URLEncoder.encode(referer,"UTF-8"));
+    					}else{
+    						session.setAttribute("dx_userBindInfo", userBindInfo);
+    					}
+    				}
+    			}
+    		}
+		}
+		chain.doFilter(request, response);
+		
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

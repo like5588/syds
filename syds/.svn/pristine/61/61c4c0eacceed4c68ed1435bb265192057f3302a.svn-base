@@ -1,0 +1,18 @@
+package com.ty.photography.dao;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.ty.photography.model.JudgeLogon;
+
+@Repository
+public interface JudgeLogonMapper {
+	/**
+	 * 根据账号查询
+	 * @param account
+	 * @return
+	 */
+	public JudgeLogon findByAccount(String account);
+
+}

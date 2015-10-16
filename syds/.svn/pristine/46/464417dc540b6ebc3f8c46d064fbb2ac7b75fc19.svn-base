@@ -1,0 +1,70 @@
+package com.ty.photography.monitor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.context.ApplicationContext;
+
+import com.ty.photography.model.Dictionary;
+import com.ty.photography.model.PhotoList;
+import com.ty.photography.service.IPhotoListService;
+import com.ty.photography.service.IUserInfoService;
+
+public class TelecomInfo implements Runnable{
+	
+	public ApplicationContext ctx;
+	
+	public TelecomInfo(ApplicationContext ctx){
+		this.ctx = ctx;
+	}
+
+	public static List<Dictionary> telecomArea;
+	public static List<Map<String,Object>> info;
+	public static AtomicInteger dxUserNum = new AtomicInteger(0);
+	public static AtomicInteger dxPhotosNum = new AtomicInteger(0);
+	public static AtomicInteger allPhotosNum = new AtomicInteger(0);
+	public static AtomicInteger allUserNum = new AtomicInteger(0);
+	public static List<PhotoList> camera_index  = new ArrayList<PhotoList>();
+	public static List<PhotoList> cellphone_index  = new ArrayList<PhotoList>();
+	
+
+	public static List<Dictionary> getTelecomArea() {
+		return telecomArea;
+	}
+
+	public void setTelecomArea(List<Dictionary> telecomArea) {
+		TelecomInfo.telecomArea = telecomArea;
+	}
+	
+
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				process();
+			} catch (Exception e) {
+				System.err.println(" get telecomInfo Runing Exception:" 
+						+ e.getMessage());
+			}
+			try {
+				Thread.sleep(600000);	//10分钟
+			} catch (InterruptedException e) {
+				System.err.println(e.getMessage());
+			}
+		}
+	}
+	private void process() throws Exception {
+		IUserInfoService userInfoService = (IUserInfoService)ctx.getBean("userInfoServiceImpl");
+		IPhotoListService photoListService = (IPhotoListService)ctx.getBean("photoListServiceImpl");
+		info = userInfoService.allTelecomInfo();
+		dxUserNum = new AtomicInteger(userInfoService.allPerson("5"));
+		dxPhotosNum = new AtomicInteger(userInfoService.allPhoto("5"));  
+		allPhotosNum = new AtomicInteger(userInfoService.allPhoto("9"));  
+		allUserNum = new AtomicInteger(userInfoService.allPerson("9"));
+		camera_index = photoListService.findIndexPhotos("1");
+		cellphone_index = photoListService.findIndexPhotos("2");
+		
+	}
+
+}

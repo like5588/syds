@@ -1,0 +1,39 @@
+package com.ty.photography.monitor;
+
+import java.util.List;
+import java.util.Map;
+
+import com.ty.photography.service.IUserInfoService;
+
+public class TelecomInfo implements Runnable{
+	
+	public IUserInfoService userInfoService;
+	
+	public TelecomInfo(IUserInfoService userInfoService){
+		this.userInfoService = userInfoService;
+	}
+	
+	public static List<Map<String,Object>> info;
+
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				process();
+			} catch (Exception e) {
+				System.err.println(" get telecomInfo Runing Exception:" 
+						+ e.getMessage());
+			}
+			try {
+				Thread.sleep(1800000);	//30分钟
+			} catch (InterruptedException e) {
+				System.err.println(e.getMessage());
+			}
+		}
+	}
+	
+	private void process() throws Exception {
+		info = userInfoService.allTelecomInfo();
+	}
+
+}

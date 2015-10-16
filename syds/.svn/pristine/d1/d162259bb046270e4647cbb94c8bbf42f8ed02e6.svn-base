@@ -1,0 +1,155 @@
+package com.ty.photography.model;
+
+import java.util.Date;
+
+import com.ty.photography.common.CommonUtils;
+
+public class PhotoInfoDto {
+	private String id;
+	private String userId;	//作者id
+	private String userName;	//作者名称
+	private String competitionArea;	//赛区名称
+	private String photoTitle;	//照片标题
+	private String photoDesc;	//照片简介
+	private String photoUrl;	//照片地址	
+	private Integer photoStatus;		//照片状态 -1未上传，0 已上传，1审核通过，2未通过
+	private Date uploadDate;			//上传时间
+	private String isSelect;	//是否入选 0未入选，1待入选，2已入选，3获奖
+	private Integer photoGroup;	//照片分组 0 相机组，1手机组，2未知
+	private String photoType;	//照片分类 纪实类(工作，生产) ，艺术类（风光、人物，生态）
+	private String photoSource;		//照片来源 PC社区，YX易信，WX微信
+	private String judgeGroupId;	//评审组ID
+	private int laudNum;	//点赞数
+	private Integer simpleGroup;	//单图组图
+	private String groupCode;		//组图
+	private Integer groupSerial;	//组图序号
+	private Integer competitionType;		//参赛类型 9 全国摄影大赛 ，5 电信摄影大赛
+	private String uploadDateStr;
+	
+	private boolean laud=false;	//是否已点赞
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getPhotoTitle() {
+		return photoTitle;
+	}
+	public void setPhotoTitle(String photoTitle) {
+		this.photoTitle = photoTitle;
+	}
+	public String getPhotoDesc() {
+		return photoDesc;
+	}
+	public void setPhotoDesc(String photoDesc) {
+		this.photoDesc = photoDesc;
+	}
+	public String getPhotoUrl() {
+		return photoUrl;
+	}
+	public void setPhotoUrl(String photoUrl) {
+		this.photoUrl = photoUrl;
+	}
+	public Integer getPhotoStatus() {
+		return photoStatus;
+	}
+	public void setPhotoStatus(Integer photoStatus) {
+		this.photoStatus = photoStatus;
+	}
+	public Date getUploadDate() {
+		return uploadDate;
+	}
+	public void setUploadDate(Date uploadDate) {
+		this.uploadDate = uploadDate;
+	}
+	public String getIsSelect() {
+		return isSelect;
+	}
+	public void setIsSelect(String isSelect) {
+		this.isSelect = isSelect;
+	}
+	public Integer getPhotoGroup() {
+		return photoGroup;
+	}
+	public void setPhotoGroup(Integer photoGroup) {
+		this.photoGroup = photoGroup;
+	}
+	public String getPhotoType() {
+		return photoType;
+	}
+	public void setPhotoType(String photoType) {
+		this.photoType = photoType;
+	}
+	public String getPhotoSource() {
+		return photoSource;
+	}
+	public void setPhotoSource(String photoSource) {
+		this.photoSource = photoSource;
+	}
+	public String getJudgeGroupId() {
+		return judgeGroupId;
+	}
+	public void setJudgeGroupId(String judgeGroupId) {
+		this.judgeGroupId = judgeGroupId;
+	}
+	public int getLaudNum() {
+		return laudNum;
+	}
+	public void setLaudNum(int laudNum) {
+		this.laudNum = laudNum;
+	}
+	public Integer getSimpleGroup() {
+		return simpleGroup;
+	}
+	public void setSimpleGroup(Integer simpleGroup) {
+		this.simpleGroup = simpleGroup;
+	}
+	public String getGroupCode() {
+		return groupCode;
+	}
+	public void setGroupCode(String groupCode) {
+		this.groupCode = groupCode;
+	}
+	public Integer getGroupSerial() {
+		return groupSerial;
+	}
+	public void setGroupSerial(Integer groupSerial) {
+		this.groupSerial = groupSerial;
+	}
+	public Integer getCompetitionType() {
+		return competitionType;
+	}
+	public void setCompetitionType(Integer competitionType) {
+		this.competitionType = competitionType;
+	}
+	public String getUploadDateStr() {
+		return CommonUtils.dateToString(uploadDate);
+	}
+	public String getCompetitionArea() {
+		return competitionArea;
+	}
+	public void setCompetitionArea(String competitionArea) {
+		this.competitionArea = competitionArea;
+	}
+	public boolean isLaud() {
+		return laud;
+	}
+	public void setLaud(boolean laud) {
+		this.laud = laud;
+	}
+	
+}

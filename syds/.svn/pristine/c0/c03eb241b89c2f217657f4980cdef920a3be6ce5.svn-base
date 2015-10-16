@@ -1,0 +1,106 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/css/wx_common.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script src="${pageContext.request.contextPath}/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/page/user_info.js"></script>  
+<script type="text/javascript">
+function gotoPage(_page){
+	url = "getMyPhoto.do";
+	data = params+"&pageIndex="+_page;
+	forAllpages();
+}
+
+function forAllpages(){
+	$.ajax({
+		url : url,
+		type : 'POST',
+		data : data,
+		dataType:"html",
+		cache : false,
+		success: function(text){
+		$("#content").html(text);
+		}
+	});
+	
+}
+$(document).ready(function(){ 
+	
+	 	//我的作品展示
+		if(request("userId")== null || request("userId") ==''){
+		alert("还未登录，请登录天翼手机网");
+		window.location.href="http://www.hicdma.com/mh/views/pages/login.jsp";
+		//$.alert("请先登录",function(){window.location.replace("/views/pages/login.jsp?redirect=/2015syds/index.jsp");});
+		}
+		//读取当前用户的所有通过审核的照片信息   通过审核 	photo_status =’1‘
+		var data = $("#query_form").serialize();
+		$.ajax({
+			url: "${pageContext.request.contextPath}/getMyPhoto.do",
+			type: "post",
+			data : data,
+			cache: false,  
+			dataType:"html",
+			success: function(text){  
+				$("#content").html(text);
+			},
+			error:function(){
+				//alert(44444444444);
+			}
+		});	
+});
+</script>
+<title>我的作品</title>
+</head>
+<body>
+<%@include file="teleCom_header.jsp"%>
+ <div class="yg_33province_bg">
+	<div class="top">我的作品列表</div>
+	 <div style="yg_works_se">
+		  	<form class="form-inline" id="query_form" style="margin-bottom: 15px;">
+			  <div class="form-group" style="padding-right:15px;">
+			     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;<label for="class"> &nbsp;&nbsp;&nbsp;&nbsp;分类：</label>
+			    <input type="hidden" name="userId" id="userId" value="${param.userId}" >
+			  </div>
+			  <div class="form-group" style="padding-right:15px;">
+			    <label for="openid">全部</label>
+			    <input type="radio" name="photoType" id="photoType" value="" >
+			  </div>
+			  <div class="form-group" style="padding-right:15px;">
+			    <label for="desc">纪实</label>
+			    <input type="radio" name="photoType" id="photoType" value="1">
+			  </div>
+			  <div class="form-group" style="padding-right:15px;">
+			    <label for="openid">风景</label>
+			    <input type="radio" name="photoType" id="photoType" value="2" >
+			  </div>
+			  
+			  <div class="form-group" style="padding-right:15px;">
+			    <label for="desc">作品标题：</label>
+			    <input type="text" class="form-control input1" style="clear:both;width: 150px;" name="photoTitle" id="photoTitle">
+			  </div>
+			  <div class="form-group" style="padding-right:15px;">
+			    <button type="button" id="query" class="btn btn-primary" style="margin-top: 5px;">查询</button>
+			  </div>
+			  
+			</form>
+	    </div>
+	<br>
+	<div id="main"> 
+	</div>  
+	<div id="content">
+	    <%@ include file="photo_list.jsp"%>
+	</div>
+</div>
+
+</body>
+</html>

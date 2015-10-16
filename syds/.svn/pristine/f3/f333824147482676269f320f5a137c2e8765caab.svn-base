@@ -1,0 +1,36 @@
+package com.ty.photography.controller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.common.FileUtil;
+
+@Controller
+@RequestMapping("/file")
+public class FileUploadController {
+	private Logger log = LoggerFactory.getLogger(FileUploadController.class);
+	
+	@RequestMapping(value="/pictureProcessing.do",produces="text/plain;charset=UTF-8;")
+	@ResponseBody
+	public String pictureProcessing(String fileUrl){
+		String result="";
+		try {
+			FileUtil fileUtil = new FileUtil();
+			//压缩图
+			String file_path = CommonUtils.parseProperties("file_path");
+			String fileName = fileUrl.substring(fileUrl.lastIndexOf("/")+1);
+			fileUtil.compressPic(file_path+"/"+fileName, file_path+"/compress/"+fileName);
+			//缩略图
+			fileUtil.thumbnail(file_path+"/"+fileName, file_path+"/thumbnail/"+fileName);
+			result = "{\"thumbnail\":"+"http://localhost/syds/files/thumbnail/"+fileUrl.substring(fileUrl.lastIndexOf("/")+1)+"}";
+		} catch (Exception e) {
+			log.error("---pictureProcessing has error---",e);
+		}
+		return result;
+	}
+
+}

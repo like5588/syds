@@ -1,0 +1,33 @@
+package com.ty.photography.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ty.photography.common.Page;
+import com.ty.photography.common.SearchPageUtil;
+import com.ty.photography.dao.PhotoListMapper;  
+import com.ty.photography.model.PhotoList;
+import com.ty.photography.service.IPhotoListService; 
+
+@Service
+public class PhotoListServiceImpl implements IPhotoListService{
+	
+	@Autowired
+	private PhotoListMapper photoListMapper;
+	
+	
+	@Override
+	public List<PhotoList> findIndexPhotosByPage(Page page,PhotoList photoList) {
+		SearchPageUtil sp = new SearchPageUtil();
+		sp.setObject(photoList);
+		sp.setPage(page);
+		return photoListMapper.findIndexPhotosByPage(sp);
+	}
+	@Override
+	public List<PhotoList> findIndexPhotos(String listType) {
+		return photoListMapper.findIndexPhotos(listType);
+	}
+	
+}

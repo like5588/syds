@@ -1,0 +1,7 @@
+redis_host=192.168.209.33
+redis_port=6379
+redis_timeout=100000
+redis_maxTotal=500
+redis_setMaxIdle=100
+redis_setMinIdle=50
+redis_maxWait=60000

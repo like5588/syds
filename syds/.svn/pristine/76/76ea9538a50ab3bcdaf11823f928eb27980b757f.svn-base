@@ -1,0 +1,61 @@
+package com.ty.photography.filter;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.model.JudgeLogon;
+
+@WebFilter(filterName="sysAuthenticateFilter",urlPatterns={"/sys/*"})
+public class SysAuthenticateFilter implements Filter{
+
+	private static String[] path = null;
+	
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+//		if(!containUrl(httpRequest.getServletPath())){
+			HttpSession session = httpRequest.getSession();
+			JudgeLogon judgeLogon = (JudgeLogon)session.getAttribute("judge");
+			if(judgeLogon==null || judgeLogon.equals("")){
+				String basePath = CommonUtils.parseProperties("BASE_URL");
+				String redirectPath = basePath + "/pingxuan.jsp";
+				((HttpServletResponse)response).sendRedirect(redirectPath);
+			}
+//		}
+		chain.doFilter(request, response);
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private boolean containUrl(String url){
+		for(String other : path){
+			if(url.equals(other)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.LaudLogMapper"> 
+
+	<resultMap id="resultMap" type="com.ty.photography.model.LaudLog" >
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="photo_id" property="photoId" jdbcType="VARCHAR"/>
+		<result column="user_id" property="userId" jdbcType="VARCHAR"/>
+		<result column="creat_time" property="creatTime" jdbcType="TIMESTAMP"/>
+		
+	</resultMap>
+	
+	<insert id="insert" parameterType="com.ty.photography.model.LaudLog">
+		insert into sy_laud_log(id,photo_id,user_id,creat_time)
+		values (#{id},#{photoId},#{userId},#{creatTime})
+	</insert>
+
+
+</mapper> 

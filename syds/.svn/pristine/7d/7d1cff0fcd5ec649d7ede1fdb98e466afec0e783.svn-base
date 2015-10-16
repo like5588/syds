@@ -1,0 +1,41 @@
+package com.ty.photography.service.impl;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.dao.UserBindInfoMapper;
+import com.ty.photography.dao.UserInfoMapper;
+import com.ty.photography.model.UserBindInfo;
+import com.ty.photography.model.UserInfo;
+import com.ty.photography.service.IUserInfoService;
+
+@Service
+public class UserInfoServiceImpl implements IUserInfoService{
+	
+	@Autowired
+	private UserInfoMapper userInfoMapper;
+	@Autowired
+	private UserBindInfoMapper userBindInfoMapper;
+
+	@Override
+	public void saveUser(UserInfo userInfo, String openid,String userSource,String competitionType) {
+		try{
+			userInfoMapper.saveUser(userInfo);
+			UserBindInfo userBindInfo = new UserBindInfo();
+			userBindInfo.setId(CommonUtils.getUUID());
+			userBindInfo.setSourceId(openid);
+			userBindInfo.setUserSource(Integer.parseInt(userSource));
+			userBindInfo.setCompetitionType(Integer.parseInt(competitionType));
+			userBindInfo.setCreateTime(new Date());
+			userBindInfo.setStatus(0);
+			userBindInfoMapper.insert(userBindInfo);
+		}catch(Exception e){
+			throw e;
+		}
+		
+	}
+
+}

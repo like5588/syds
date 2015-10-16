@@ -1,0 +1,13 @@
+package com.ty.photography.dao;
+
+import org.springframework.stereotype.Repository;
+
+import com.ty.photography.model.UserInfo;
+
+@Repository
+public interface UserInfoMapper {
+	
+	public void saveUser(UserInfo userInfo);
+
+	public UserInfo findById(String id);
+}

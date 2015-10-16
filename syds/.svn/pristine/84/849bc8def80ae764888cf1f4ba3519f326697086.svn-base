@@ -1,0 +1,134 @@
+package com.ty.photography.common;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
+
+public class RedisUtil {
+	private static Logger log = LoggerFactory.getLogger(RedisUtil.class);
+	
+	private static final String REDIS_CONFIG_FILENAME = "redis.properties";
+	private static Jedis jedis;
+	private static JedisPool jedisPool;
+	
+	static{
+		InputStream is = null;
+        try {
+            is = Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream(REDIS_CONFIG_FILENAME);
+            Properties props = new Properties();
+            props.load(is);
+            JedisPoolConfig config = new JedisPoolConfig();
+            config.setMaxTotal(Integer.parseInt(props.getProperty("redis_maxTotal")));
+            config.setMaxIdle(Integer.parseInt(props.getProperty("redis_setMaxIdle")));
+            config.setMinIdle(Integer.parseInt(props.getProperty("redis_setMinIdle")));
+            config.setMaxWaitMillis(Long.valueOf(props.getProperty("redis_maxWait")));
+            config.setTestOnBorrow(true);
+            config.setTestOnReturn(true);
+            config.setTestWhileIdle(true);
+            jedisPool = new JedisPool(config,
+                  props.getProperty("redis_host"),
+                  Integer.parseInt(props.getProperty("redis_port")),
+                  Integer.parseInt(props.getProperty("redis_timeout")));
+        } catch (Exception e) {
+            log.error("init error", e);
+        } finally {
+            if (null != is ) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+//                    e.printStackTrace();
+                    log.error("process failed",e);
+                }
+            }
+        }
+	}
+	
+	/**
+     * 返回 key 所关联的字符串值
+     * @param key
+     * @return
+     */
+    public static String get(String key) {
+        String ret = "";
+        try {
+            jedis = jedisPool.getResource();
+            ret = jedis.get(key);
+        } catch (Exception e) {
+            log.error("get", e);
+        } finally {
+        	jedisPool.returnResource(jedis);
+        }
+        return ret;
+    }
+    /**
+     * 返回哈希表 key 中给定域 field 的值。
+     * @param key
+     * @param field
+     * @return
+     */
+    public static String hget(String key, String field) {
+    	String retval = "";
+    	try{
+    		jedis = jedisPool.getResource();
+            retval = jedis.hget(key, field);
+    	}catch(Exception e){
+    		log.error("hget",e);
+    	}finally {
+    		jedisPool.returnResource(jedis);
+        }
+        return retval;
+    }
+    
+    /**
+     *  将值 value 关联到 key 
+     * @param key        key
+     * @param value      value
+     */
+    public static void set(String key, String value) {
+        try {
+            jedis = jedisPool.getResource();
+            jedis.set(key, value);
+        } catch (Exception e) {
+            log.error("set", e);
+        } finally {
+            jedisPool.returnResource(jedis);
+        }
+    }
+
+    public static boolean hset(String key, String field, String value) {
+        boolean ret = false;
+        try {
+            jedis = jedisPool.getResource();
+            long val = jedis.hset(key, field, value);
+            if ((1 == val) || (0 == val)) {
+                ret = true;
+            }
+        } catch (Exception e) {
+            log.error("hset", e);
+            ret = false;
+        } finally {
+            jedisPool.returnResource(jedis);
+        }
+        return ret;
+    }
+
+    public void setex(String key, int seconds, String value) {
+        try {
+            jedis = jedisPool.getResource();
+            jedis.setex(key, seconds, value);
+        } catch (Exception e) {
+            log.error("setex", e);
+        } finally {
+            jedisPool.returnResource(jedis);
+        }
+    }
+}

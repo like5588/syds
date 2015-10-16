@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.UserBindInfoMapper"> 
+
+	<resultMap id="resultMap" type="com.ty.photography.model.UserBindInfo" >
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="user_id" property="userId" jdbcType="VARCHAR"/>
+		<result column="source_id" property="sourceId" jdbcType="VARCHAR"/>
+		<result column="user_source" property="userSource" jdbcType="INTEGER"/>
+		<result column="competition_type" property="competitionType" jdbcType="INTEGER"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+		<result column="status" property="status" jdbcType="TINYINT"/>
+	</resultMap>
+	
+	<insert id="insert" parameterType="com.ty.photography.model.UserBindInfo">
+		insert into sy_user_bind_info(id,user_id,source_id,user_source,competition_type,create_time,modify_time,status)
+		values (#{id},#{userId},#{sourceId},#{userSource},#{competitionType},#{createTime},#{modifyTime},#{status})
+	</insert>
+
+	<select id="findUserBindInfo" parameterType="map" resultMap="resultMap">
+		select * from sy_user_bind_info 
+		<where>
+			<if test="sourceId != null">
+				source_id = #{sourceId}
+			</if>
+			<if test="userSource != null">
+				and user_source = #{userSource}
+			</if>
+			<if test="competitionType != null">
+				and competition_type = #{competitionType}
+			</if>
+		</where>
+	</select>
+</mapper>

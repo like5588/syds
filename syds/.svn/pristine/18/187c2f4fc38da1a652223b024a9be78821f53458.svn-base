@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.JudgeLogonMapper"> 
+
+	<resultMap id="resultMap" type="com.ty.photography.model.JudgeLogon" >
+		
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="account" property="account" jdbcType="VARCHAR"/>
+		<result column="password" property="password" jdbcType="VARCHAR"/>
+		<result column="petname" property="petName" jdbcType="VARCHAR"/>
+		<result column="judge_group_id" property="judgeGroupId" jdbcType="VARCHAR"/>
+		<result column="judge_role" property="judgeRole" jdbcType="TINYINT"/>
+		<result column="type" property="type" jdbcType="TINYINT"/>
+		<result column="competition_area" property="competitionArea" jdbcType="VARCHAR"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+		<result column="status" property="status" jdbcType="TINYINT"/>
+		
+	</resultMap>
+	
+	<select id="findByAccount" parameterType="string"  resultMap="resultMap">
+		select * from sy_judge_logon where account = #{value} and status=0
+	</select>
+
+</mapper>

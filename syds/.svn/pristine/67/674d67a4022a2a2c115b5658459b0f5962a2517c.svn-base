@@ -1,0 +1,13 @@
+WX_APPID=wx5b7a0c0492e4ee97
+WX_SECRET=52b861931122775017d8610cdfb02d13
+BASE_URL=http://yxhd.hicdma.com/syds
+REDIRECT_URI=
+image_praise_file=d:/praise.error
+file_path=/opt/syds/files/syds2015
+
+compress_image_url=http://yxsyds.hicdma.com/upload/syds2015/compress/
+thumbnail_image_url=http://yxsyds.hicdma.com/upload/syds2015/thumbnail/
+excellent_image_url=http://yxsyds.hicdma.com/upload/syds2015/excellent/
+
+YX_APPID=cc1ce051cb8448c9b6563abba5c261a1
+YX_SECRET=eb49668ad3fb4905890dc1afa820c771

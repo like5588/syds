@@ -1,0 +1,23 @@
+<%@ page language="java"  pageEncoding="UTF-8"%>
+<!--天翼4G 分享美好大图-->
+<div class="yg_top">
+	<div class="yg_topbutton"><img src="img/top_button.png" onclick="startLoad()"/>	
+    <span>参赛作品:<strong id="pnum">48503</strong>   参与人数:<strong id="unum">4956696</strong></span>
+    </div>
+</div>
+
+<!--导航开始-->
+<div class="yg_menu_bg">
+	<div class="yg_menu">
+    	<ul>
+        	<li><a href="index_teleCom.jsp">首页</a></li>
+            <li><a href="introduction.jsp">大赛介绍</a></li>
+            
+            <li style="width:120px; color:#959595">入选名单</li>
+        </ul>
+       <div class="yg_menu_login">
+       		<a href="#">登录</a>&nbsp;&nbsp;|&nbsp;
+            <a href="#">注册</a>
+       </div>
+    </div>
+</div>

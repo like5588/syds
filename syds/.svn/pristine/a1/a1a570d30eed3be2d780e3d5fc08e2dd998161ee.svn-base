@@ -1,0 +1,81 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<!-- 
+	用于分页
+	<div id="pagination_box">
+	      <ul id="pagination">
+	          <li><a class="nolink" >&laquo; 上一页</a></li>
+	          <li><a class="current">1</a></li>
+	          <li><a href="#">2</a></li>
+	          <li><a href="#">3</a></li>
+	          <li><a href="#">4</a></li>
+	          <li><a href="#">5</a></li>
+	          <li><a href="#">6</a></li>
+	          <li><a href="#">7</a></li>
+	          <li><a href="#">8</a></li>
+	          <li><a href="#">9</a></li>
+	          <li><a href="#">10</a></li>
+	          <li><a href="#">下一页 &raquo;</a>
+	      </ul>
+	</div>
+	
+	显示粗原型如下:
+	上一页	1	2	3	4	5   6   7   8   9      下一页	总记录数20
+	
+	1	2	3	...   11 
+	1	2	3	4	5	...   11 
+	1	2	3	4	5	6	7	...		 11
+	1	... 	4	5	6	7	8	...	 11
+	
+ -->
+<div align="center">
+ 	<c:if test="${page.pageTotal>1}">
+	      <ul class="pagination">
+			<li <c:if test="${page.pageIndex eq 1}">class="disabled"</c:if>><a <c:if test="${page.pageIndex > 1}">href="javascript:gotoPage(${page.pageIndex-1})"</c:if>>&laquo; 上一页</a></li>
+		
+	      	<!-- 如果当前页数大于9就要把头与尾始终显示 -->
+			<c:if test="${page.pageTotal>9}">
+				<!-- 始终显示头 -->
+				<!-- 如果当前页为第一页 -->
+				<li <c:if test="${page.pageIndex eq 1}">class="active"</c:if>><a href="javascript:gotoPage(1)">1</a></li>
+				
+				<c:if test="${page.pageIndex <= 5 && page.pageIndex >1}">
+					<c:forEach begin="2" end="${page.pageIndex-1}" step="1" var="i">
+						<li><a href="javascript:gotoPage(${i})">${i}</a></li>
+					</c:forEach>
+				</c:if>
+				<c:if test="${page.pageIndex > 5}">
+					<li><a>...</a></li>
+					<li><a href="javascript:gotoPage(${page.pageIndex-2})">${page.pageIndex-2}</a></li>
+					<li><a href="javascript:gotoPage(${page.pageIndex-1})">${page.pageIndex-1}</a></li>
+				</c:if>
+				<c:if test="${page.pageIndex ne 1 && page.pageIndex ne page.pageTotal}">
+					<li class="active"><a href="javascript:gotoPage(${page.pageIndex})">${page.pageIndex}</a></li>
+				</c:if>
+				<c:if test="${page.pageIndex >= page.pageTotal-4 && page.pageIndex < page.pageTotal}">
+					<c:forEach begin="${page.pageIndex+1}" end="${page.pageTotal-1}" step="1" var="i">
+						<li><a href="javascript:gotoPage(${i})">${i}</a></li>
+					</c:forEach>
+				</c:if>
+				<c:if test="${page.pageIndex < page.pageTotal-4}">
+					<li><a href="javascript:gotoPage(${page.pageIndex+1})">${page.pageIndex+1}</a></li>
+					<li><a href="javascript:gotoPage(${page.pageIndex+2})">${page.pageIndex+2}</a></li>
+					<li><a>...</a></li>
+				</c:if>
+				
+				<!-- 始终显示最后一页 -->
+				<!-- 如果当前页为最后一页 -->
+				<li <c:if test="${page.pageIndex eq page.pageTotal}">class="active"</c:if>><a href="javascript:gotoPage(${page.pageTotal})">${page.pageTotal}</a></li>
+			</c:if>
+			<!-- 如果当前页数小于等于9时 -->
+			<c:if test="${page.pageTotal<=9}">
+				<c:forEach begin="1" end="${page.pageTotal}" step="1" var="i">
+						<li <c:if test="${page.pageIndex eq i}">class="active"</c:if>><a href="javascript:gotoPage(${i})">${i}</a></li>
+				</c:forEach>
+			</c:if>
+			
+			<!-- 如果当前页为最后页，那此下一页不可用 -->
+			<li <c:if test="${page.pageIndex eq page.pageTotal}">class="disabled"</c:if>><a <c:if test="${page.pageIndex < page.pageTotal}">href="javascript:gotoPage(${page.pageIndex+1})"</c:if>>下一页 &raquo;</a></li>
+	     </ul>
+	</c:if>
+</div>
+ 

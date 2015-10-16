@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.UserLotteryMapper"> 
+
+	<resultMap id="resultMap" type="com.ty.photography.model.UserLottery" >
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="user_id" property="userId" jdbcType="VARCHAR"/>
+		<result column="lottery_time" property="lotteryTime" jdbcType="TIMESTAMP"/>
+		<result column="lottery_result" property="lotteryResult" jdbcType="VARCHAR"/>
+		<result column="lottery_name" property="lotteryName" jdbcType="VARCHAR"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR"/>
+		<result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+		<result column="postcode" property="postcode" jdbcType="VARCHAR"/>
+		<result column="address" property="address" jdbcType="VARCHAR"/>
+		<result column="status" property="status" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<insert id="insert" parameterType="com.ty.photography.model.UserLottery">
+		insert into sy_user_lottery (id,user_id,lottery_time,lottery_result,lottery_name,user_name,
+			mobile,postcode,address,status)
+		values(#{id},#{userId},#{lotteryTime},#{lotteryResult},lotteryName,#{userName},
+			#{mobile},#{postcode},#{address},#{status});
+	</insert>
+
+	<select id="queryByCondition" parameterType="com.ty.photography.model.UserLottery">
+		select * from sy_user_lottery
+		<where>
+			<if test="userId != null">
+				user_id = #{userId}
+			</if>
+			<if test="lotteryResult != null">
+				and lottery_result = #{lotteryResult}
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</where>
+		order by lottery_time desc
+	</select>
+	
+	<select id="queryRecentlyWinInfo" resultMap="resultMap">
+		select * from sy_user_lottery where lottery_result != 0 order by lottery_time desc limit 0 15
+	</select>
+</mapper>

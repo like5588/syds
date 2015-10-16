@@ -1,0 +1,25 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<!-- 
+	用于分页
+	<div id="pagination_box">
+	      <ul id="pagination">
+	          <li><a class="nolink" >&laquo; 上一页</a></li>
+	          <li><a href="#">下一页 &raquo;</a></li>
+	      </ul>
+	</div>
+	
+	显示粗原型如下:
+	上一页	1     下一页	
+	
+ -->
+<div align="center">
+ 	<c:if test="${page.pageTotal>1}">
+	      <ul class="pagination">
+			<li <c:if test="${page.pageIndex eq 1}">class="disabled"</c:if>><a <c:if test="${page.pageIndex > 1}">href="javascript:gotoPage(${page.pageIndex-1})"</c:if>>&laquo; 上一页</a></li>
+			<li><a>${page.pageIndex}</a></li>
+			<!-- 如果当前页为最后页，那此下一页不可用 -->
+			<li <c:if test="${page.pageIndex eq page.pageTotal}">class="disabled"</c:if>><a <c:if test="${page.pageIndex < page.pageTotal}">href="javascript:gotoPage(${page.pageIndex+1})"</c:if>>下一页 &raquo;</a></li>
+	     </ul>
+	</c:if>
+</div>
+ 

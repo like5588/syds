@@ -1,0 +1,58 @@
+package com.ty.photography.service.impl;
+
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.dao.UserCoinMapper;
+import com.ty.photography.dao.UserLotteryMapper;
+import com.ty.photography.model.UserCoin;
+import com.ty.photography.model.UserLottery;
+import com.ty.photography.monitor.LotteryInfo;
+import com.ty.photography.service.IDictionaryService;
+import com.ty.photography.service.ILotteryService;
+
+@Service
+public class LotteryServiceImpl implements ILotteryService{
+
+	@Autowired
+	private IDictionaryService dictionaryService;
+	@Autowired
+	private UserLotteryMapper userLotteryMapper;
+	@Autowired
+	private UserCoinMapper userCoinMapper;
+	@Override
+	public int lottery(String userId) {
+		int lottery = 0;
+		UserCoin userCoin = userCoinMapper.findByUserId(userId);
+		if(userCoin.getCurrentCoin()>=10){
+			LotteryInfo lotteryInfo = LotteryInfo.getInstance(dictionaryService);
+			lottery = lotteryInfo.lottery(userId);
+			if(lottery != -2){
+				//扣除积分
+				Map<String,Object> queryMap = new HashMap<String,Object>();
+				queryMap.put("userId", userId);
+				queryMap.put("coin", 10);
+				queryMap.put("modifyTime", new Date());
+				userCoinMapper.updateCoins(queryMap);
+				//保存用户抽奖信息
+				UserLottery userLottery = new UserLottery();
+				userLottery.setId(CommonUtils.getUUID());
+				userLottery.setUserId(userId);
+				userLottery.setLotteryTime(new Date());
+				userLottery.setLotteryResult(lottery);
+				userLottery.setStatus(lottery == 0 ? 0 : 1);
+				userLotteryMapper.insert(userLottery);
+			}
+		}else{
+			lottery = -3;	//当前积分不够
+		}
+		return lottery;
+	}
+
+}

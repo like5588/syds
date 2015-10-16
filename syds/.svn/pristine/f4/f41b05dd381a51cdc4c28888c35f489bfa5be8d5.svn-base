@@ -1,0 +1,13 @@
+WX_APPID=wxbb68c06d3e54c494
+WX_SECRET=59c8f1b8aae7d207ca011b7803772672
+BASE_URL=http://localhost:8080/syds
+REDIRECT_URI=
+image_praise_file=d:/praise.error
+file_path=D:/eclipse/pro/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/syds/files
+
+compress_image_url=http://localhost:8080/syds/files/compress/
+thumbnail_image_url=http://localhost:8080/syds/files/thumbnail/
+excellent_image_url=http://localhost:8080/syds/files/excellent/
+#rockfocus.xicp.net
+YX_APPID=8c963c46dd6b433e95fb72d81c240eb8
+YX_SECRET=81275e0c68d94785a354506345c7db77

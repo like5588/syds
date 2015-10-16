@@ -1,0 +1,32 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<div class="yg_workslist">
+		<c:if test="${PhotoList ne null}">
+			<c:if test="${listSize>0}">
+				<c:forEach var="PhotoInfo" items="${PhotoList}" varStatus="xh">
+	    				<li style="float:left;">
+							<span class="yg_workspic"><a id="${PhotoInfo.id}" href="files/compress/${PhotoInfo.photoUrl}" target="view_window" title="大图">
+								<img src="files/thumbnail/${PhotoInfo.photoUrl}"/></a>
+							</span> 
+							<div class="yg_workspic_time">  
+								<ul> 
+									<li>标题：${PhotoInfo.photoTitle}  <br />时间：<fmt:formatDate value='${PhotoInfo.uploadDate}' pattern='yyyy-MM-dd'/> </li>
+									<c:if test="${PhotoInfo.isSelect==1}"><li style="width:50px; color:#ff8a00"></li>
+											 入选<li class="yg_workspic_good"><br />&nbsp;</li></c:if>
+											  <c:if test="${PhotoInfo.isSelect==0}">未入选</c:if>
+	
+								</ul>
+							</div>
+						</li> 
+					
+	    		</c:forEach>
+			</c:if>
+    	</c:if>
+		<c:if test="${PhotoList eq null || listSize==0}">
+			<div colspan="12" style="text-align: center;">暂无记录</div>
+		</c:if> 
+		</div>  
+<br><br><br><br><br><br><br><br><br><br>
+<%@ include file="/paging.jsp"%>	

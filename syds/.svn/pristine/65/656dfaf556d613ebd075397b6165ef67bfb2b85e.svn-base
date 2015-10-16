@@ -1,0 +1,15 @@
+package com.ty.photography.service;
+
+import com.ty.photography.model.UserInfo;
+
+public interface IUserInfoService {
+	/**
+	 * 保存用户信息
+	 * @param userInfo
+	 * @param openid
+	 * @param userSource 0 手机网用户，1微信用户，2易信用户
+	 * @param competitionType 9 全国摄影大赛 ，5 电信摄影大赛
+	 */
+	public void saveUser(UserInfo userInfo,String openid,String userSource,String competitionType);
+
+}

@@ -1,0 +1,94 @@
+package com.ty.photography.controller.mobile;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.ty.photography.common.Page;
+import com.ty.photography.common.WxUtil;
+import com.ty.photography.model.JsTicket;
+import com.ty.photography.model.PhotoInfo;
+import com.ty.photography.model.UserBindInfo;
+import com.ty.photography.service.IPhotoInfoService;
+import com.ty.photography.service.IUserBindInfoService;
+
+@Controller
+@RequestMapping(value="/wx")
+public class PhotoController {
+	private Logger log = LoggerFactory.getLogger(PhotoController.class);
+	
+	@Autowired
+	private IUserBindInfoService userBindInfoServiceImpl;
+	@Autowired
+	private IPhotoInfoService photoInfoServiceImpl;
+	/**
+	 * 编辑照片信息
+	 * @param openid  openid
+	 * @param userSource 0 手机网用户，1微信用户，2易信用户
+	 * @param competitionType 9 全国摄影大赛 ，5 电信摄影大赛
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="editPhoto.do",produces="text/plain;charset=UTF-8;")  
+	public String editPhoto(HttpServletRequest request,ModelMap model){
+			//用户存在则跳转到编辑页面
+			String basePath = request.getRequestURL().toString();
+			WxUtil wxUtil = WxUtil.getInstance();
+			JsTicket jsTicket = wxUtil.getJsTicket();
+			String appId = wxUtil.getAppId();
+			Map<String, String> result = jsTicket.sign(basePath.toString());
+			model.addAttribute("appId", appId);
+			model.addAttribute("timestamp", result.get("timestamp"));
+			model.addAttribute("nonceStr", result.get("nonceStr"));
+			model.addAttribute("signature", result.get("signature"));
+			return "edit_photo";
+	}
+	
+	@RequestMapping(value="upload.do",produces="text/plain;charset=UTF-8;")  
+	public void upload(String serverIds){
+		System.out.println(serverIds);
+	}
+	/**
+	 * 显示我的图片
+	 * @param openid
+	 * @param pageIndex
+	 */
+	@RequestMapping(value="myPhotos.do",produces="text/plain;charset=UTF-8;")  
+	public String myPhotos(String userId,String pageIndex,HttpServletRequest request,ModelMap model){
+		try{
+			Page page = new Page();
+			int pageNo = 1;
+			if(StringUtils.isNotBlank(pageIndex)){
+				try{
+					pageNo = Integer.parseInt(pageIndex);
+				}catch(Exception e){
+					throw e;
+				}
+				page.setPageIndex(pageNo);
+			}
+			PhotoInfo photoInfo = new PhotoInfo();
+			HttpSession session = request.getSession();
+			UserBindInfo userBindInfo = (UserBindInfo)session.getAttribute("wx_userBindInfo");
+			photoInfo.setUserId(userBindInfo.getUserId());
+			List<PhotoInfo> photoInfoList = photoInfoServiceImpl.findMyPhotosByPage(page,photoInfo);
+			model.addAttribute("photoInfoList", photoInfoList);
+			model.addAttribute("list.size", photoInfoList.size());
+			model.addAttribute("page",page);
+		}catch(Exception e){
+			log.error("--- show myPhotos has error ---",e);
+		}
+		return "my_photos";
+	}
+
+}

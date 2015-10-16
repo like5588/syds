@@ -1,0 +1,64 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<script type="text/javascript">
+var params = "";
+function gotoPage(_page){
+	var data = params+"&pageIndex="+_page;
+	$.ajax({
+		url : "checkPendingPage.do",
+		type : 'POST',
+		data : data,
+		dataType:"html",
+		cache : false,
+		success : function(text){
+			$("#checkPending_content").html(text);
+		}
+	});
+}
+$(document).ready(function(){
+	$("#query").click(function(){
+		alert(2357);
+		params = $("#query_form").serialize();
+		alert(params);
+		$.ajax({
+			url : "checkPendingPage.do",
+			type : 'POST',
+			data : params,
+			dataType:"html",
+			cache : false,
+			success : function(text){
+				$("#checkPending_content").html(text);
+			}
+		});
+	});
+});
+
+</script>
+<div style="border-bottom: 1px solid #eee; margin-bottom: 20px;">
+	<form class="form-inline" id="query_form" style="margin-bottom: 15px;">
+		<div class="form-group" style="padding-right: 15px;">
+			<label for="photoStatus">作品状态：</label> 
+			<select class="form-control" id="photoStatus" name="photoStatus">
+				<option value="">---请选择---</option>
+				<option value="0">待审核</option>
+				<option value="1">审核通过</option>
+				<option value="2">未通过审核</option>
+			</select>
+		</div>
+		<button type="button" id="query" class="btn btn-primary" style="margin: 0 10px;">查询</button>
+		<button type="button" class="btn btn-primary" style="margin: 0 10px; float: right;">审核不通过</button>
+		<button type="button" class="btn btn-primary" style="margin: 0 10px; float: right;">审核通过</button>
+		<div class="form-group" style="margin: 6px 40px; float: right;">
+			<label class="checkbox-inline">
+			  <input type="checkbox" id="checkALl" value="all"> 全选
+			</label>
+			<label class="checkbox-inline">
+			  <input type="checkbox" id="uncheck" value="no"> 反选
+			</label>
+		</div>
+	</form>
+</div>
+<div id="checkPending_content">
+	<%@include file="checkPending_list.jsp"%>
+</div>

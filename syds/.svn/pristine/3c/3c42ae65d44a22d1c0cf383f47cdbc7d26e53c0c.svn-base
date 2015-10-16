@@ -1,0 +1,15 @@
+package com.ty.photography.dao;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.ty.photography.common.SearchPageUtil;
+import com.ty.photography.model.PhotoInfo;
+
+@Repository
+public interface PhotoInfoMapper {
+	
+	public List<PhotoInfo> findMyPhotosByPage(SearchPageUtil searchPageUtil);
+
+}

@@ -1,0 +1,99 @@
+package com.ty.photography.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ty.photography.common.CommonUtils;
+import com.ty.photography.common.Page;
+import com.ty.photography.common.SearchPageUtil;
+import com.ty.photography.dao.PhotoDownloadMapper;
+import com.ty.photography.dao.PhotoInfoMapper;
+import com.ty.photography.model.PhotoDownload;
+import com.ty.photography.model.PhotoInfo;
+import com.ty.photography.model.PhotoInfoDto;
+import com.ty.photography.service.IPhotoInfoService;
+import com.ty.photography.service.IUserBindInfoService;
+
+@Service
+public class PhotoInfoServiceImpl implements IPhotoInfoService{
+	
+	@Autowired
+	private IUserBindInfoService userBindInfoServiceImpl;
+	@Autowired
+	private PhotoInfoMapper photoInfoMapper;
+	@Autowired
+	private PhotoDownloadMapper photoDownloadMapper;
+	
+	@Override
+	public List<PhotoInfo> findMyPhotosByPage(Page page,PhotoInfo photoInfo) {
+		
+		SearchPageUtil sp = new SearchPageUtil();
+		sp.setObject(photoInfo);
+		sp.setPage(page);
+		
+		return photoInfoMapper.findMyPhotosByPage(sp);
+	}
+	
+	@Override
+	public List<PhotoInfoDto> findAllPhotosByPage(Page page,
+			PhotoInfoDto photoInfoDto, String orderBy) {
+		SearchPageUtil sp = new SearchPageUtil();
+		sp.setObject(photoInfoDto);
+		sp.setOrderBy(orderBy);
+		sp.setPage(page);
+		
+		return photoInfoMapper.findAllPhotosByPage(sp);
+	}
+	@Override
+	public void savePhotoInfo(PhotoInfo photoInfo) {
+		photoInfoMapper.savePhotoInfo(photoInfo);
+	}
+	@Override
+	public PhotoInfo findLastEditPhotoInfo(String openId,String userSource, String competitionType) {
+		Map<String, Object> queryMap = new HashMap<String, Object>();
+		queryMap.put("sourceId", openId);
+		queryMap.put("userSource", userSource);
+		queryMap.put("competitionType", competitionType);
+		return photoInfoMapper.findLastEditPhotoInfo(queryMap);
+	}
+	@Override
+	public boolean udpatePhotoStatus(String sourceId, String photoUrl,String userSource,
+			String competitionType) {
+		Map<String, Object> queryMap = new HashMap<String, Object>();
+		queryMap.put("sourceId", sourceId);
+		queryMap.put("userSource", userSource);
+		queryMap.put("competitionType", competitionType);
+		PhotoInfo photoInfo = photoInfoMapper.findLastEditPhotoInfo(queryMap);
+		if(photoInfo != null && photoInfo.getPhotoStatus() == -2){
+			photoInfo.setPhotoStatus(-1);	//设置状态为已上传到易信
+			photoInfo.setUploadDate(new Date());
+			photoInfoMapper.udpatePhotoStatus(photoInfo);
+			
+			PhotoDownload photoDownload = new PhotoDownload();
+			photoDownload.setId(CommonUtils.getUUID());
+			photoDownload.setUserSource(Integer.parseInt(userSource));	//来源
+			photoDownload.setUploadTime(photoInfo.getUploadDate());	//上传时间
+			photoDownload.setImageUrl(photoUrl);
+			photoDownload.setStatus(0);	//未下载
+			photoDownload.setPhotoInfoId(photoInfo.getId());	//照片id
+			photoDownloadMapper.save(photoDownload);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int checkPhotos(String stat, String... photoIds) {
+		Map<String,Object> paramsMap = new HashMap<String,Object>();
+		paramsMap.put("photoStatus", stat);
+		paramsMap.put("ids", photoIds);
+		return photoInfoMapper.checkPhotos(paramsMap);
+	}
+
+	
+}

@@ -1,0 +1,179 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport"
+	content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/css/wx_common.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+/*--获取网页传递的参数--*/    
+function request(paras){         
+	var url = location.href;  
+	var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");        
+	var paraObj = {}         
+	for (i=0; j=paraString[i]; i++){        
+		paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length);       
+	}         
+	var returnValue = paraObj[paras.toLowerCase()];        
+	if(typeof(returnValue)=="undefined"){         
+		return "";        
+	}else{  
+		return returnValue;   
+	}  
+}
+
+$(document).ready(function(){
+	if(request("competitionType") == '5'){
+		$.ajax({
+			url: "${pageContext.request.contextPath}/getAreas.do", 
+			type: "post",
+			cache: false,  
+			dataType:"json",
+			success: function(msg){
+				$.each(msg, function (n, value) {  
+					var option = "<option value=\""+value.value+"\">" +value.value+ "</option>";  
+					$("#dx_area").append(option);
+				}); 
+			}
+		});
+	}
+	
+	$("#saveUserInfo").on("click",function(){
+		save(this);
+	});
+	
+	$("#close").click(function(){
+		wx.closeWindow();
+	});
+	
+});
+
+function save(_this){
+	$(_this).off("click");
+	down();
+	var name = $("#name").val();
+	var mobile = $("#mobile").val();
+	var param = $("#userInfo_form").serialize();
+	param += "&sourceId="+request("openid")+"&userSource="+request("userSource")+"&competitionType="+request("competitionType");
+	if(name.length <=0){
+		alert("请输入姓名！");
+		up();
+		return;
+	}
+	else if(mobile.length <=0){
+		alert("请输入手机号码！");
+		up();
+		return;
+	}
+	$.ajax({
+		type: "post", 
+		  data : param,
+		  url: "${pageContext.request.contextPath}/saveUser.do",  
+		  cache: false,  
+		  dataType:"json",
+	  	  success: function(msg) {
+	  		  if(msg.result=="0"){
+	  			  alert("保存成功");
+	  			  var referer = decodeURIComponent(request("referer")).replace("#","");
+	  			  window.location.href=referer;
+	  		  }else if(msg.result=="1" || msg.result=="-1"){
+	  			  alert("保存失败");
+	  		  }else if(msg.result=="2"){
+	  			  alert("参数不能为空");
+	  		  }else if(msg.result=="3"){
+	  			 //  alert("用户已存在");
+	  			  var referer = decodeURIComponent(request("referer")).replace("#","");
+	  			  window.location.href=referer;
+	  		  }
+	  		up();
+		  }
+	});
+}
+
+function up(){
+	  $("#saveUserInfo").css("background-color","#dd0000");
+	  $("#saveUserInfo").css("background-image","");
+	  $("#saveUserInfo").css("background-size","");
+	  $("#saveUserInfo").css("background-repeat","");
+	  $("#saveUserInfo").css("background-position","");
+	  $("#saveUserInfo").on("click",function(){
+			save(this);
+	  });
+}
+function down(){
+	$("#saveUserInfo").attr("disabled",true);   
+	$("#saveUserInfo").css("background-color","#a60000");
+	$("#saveUserInfo").css("background-image","url('../images/loading.gif')");
+	$("#saveUserInfo").css("background-size","26px 26px");
+	$("#saveUserInfo").css("background-repeat"," no-repeat");
+	$("#saveUserInfo").css("background-position","center center");
+}
+</script>
+<title>首次使用</title>
+</head>
+<body>
+	<div class="top">保存用户信息</div>
+	<div style="margin:10px;">
+		<form class="form-horizontal" id="userInfo_form">
+		  <div class="form-group">
+		    <div class="col-sm-offset-1 col-sm-10">
+		      <input type="text" class="form-control" id="name" name="name" placeholder="请输入姓名">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <div class="col-sm-offset-1 col-sm-10">
+		      <input type="text" class="form-control" id="mobile" name="mobile" placeholder="请输入手机号码">
+		    </div>
+		  </div>
+		  <c:if test="${param.competitionType == '5'}">
+		  <div class="form-group">
+			<div class="col-sm-offset-1 col-sm-10">
+				<select class="form-control" id="dx_area" name="dxArea">
+					<option value="">---请选择---</option>
+				</select>
+			</div>
+		  </div>
+		  </c:if>
+		  <div class="panel panel-default">
+			  <div class="panel-body" style="height: 250px;overflow: scroll;background-color: #f5f5f5;font-size: 12px;">
+			    	<h5 style="text-align: center;">承诺书</h5>
+			    	<c:if test="${param.competitionType == '9'}">
+			    	<p>本承诺书是您就参与“2015 “天翼手机杯”全国摄影大展”（以下称“摄影大展”，公众号：摄影大赛）而向中国电信及关联公司作出的承诺，请您请您仔细阅读下列条款。一旦您点击“同意”，即表明您已阅读并接受下列条款作为您向中国电信作出的承诺，愿意按照本承诺书的内容履行您的义务，并以此作为解决双方间纠纷的依据。</p>
+					</c:if>
+					<c:if test="${param.competitionType == '5'}">
+					<p>本承诺书是您就参与“2015中国电信员工摄影大赛（以下称“摄影大赛”，公众号：天翼手机）而向摄影大赛主办方中国电信集团工会、中国电信摄影协会作出的承诺，请您请您仔细阅读下列条款。一旦您点击“同意”，即表明您已阅读并接受下列条款作为您向中国电信作出的承诺，愿意按照本承诺书的内容履行您的义务，并以此作为解决双方间纠纷的依据。</p>
+					</c:if>
+					<p>	一、本人保证为参加摄影大展作品的唯一创作者，对参展作品拥有完整、排他的著作权。摄影大展期间，本人同意中国电信及关联公司为开展摄影大展需要而无偿使用参赛作品，并保证在摄影大展评选结果揭晓前未曾且不得许可他人使用、开发该作品。</p>
+					<p>	二、本人保证参展作品未侵犯任何第三方的合法权益（包括但不限于知识产权、肖像权、隐私权等各项权益），如因该等作品侵犯第三方合法权益或因本人的其他过错而使中国电信或其关联公司（包括但不限于中国电信的分公司、子公司、下属机构）遭受任何名誉或经济上的损失，本人将根据中国电信的要求采取相关措施，以保证中国电信免受上述损失。中国电信同时保留向本人追究和索赔的权利。</p>
+					<p>	三、本人许可中国电信及其关联公司使用本人参加摄影大展并获奖的摄影作品（以下简称“获奖作品” ，）用于其定制手机的壁纸图片、各项业务宣传活动及其他商业用途。本人同意中国电信及其关联公司根据经营需要及业务要求可以适当修改获奖作品（包括但不限于对作品进行必要的筛选、重新编排、编辑、修改、技术处理及相应的文字诠释、注释等），以及为设计、制作相关主题图片和进行各项业务及宣传活动而许可他人使用上述作品，以满足设计、制作及业务宣传的要求。</p>
+					<p>	四、本人许可中国电信及关联公司专有使用获奖作品，即：除中国电信及关联公司外，本人不再出售、转让获奖作品或自行使用获奖作品用于与本承诺书相同或近似的用途，也不再许可任何第三方使用获奖作品用于与本承诺书相同或近似的用途。</p>
+					<p>	五、本人保证所提供的本人姓名、身份证号码、工作单位及手机号码等个人信息均真实有效，并自愿履行本承诺。如因本人提供的个人信息存在任何虚假、瑕疵或因违反本承诺书而导致中国电信或其关联公司损害的，本人将承担一切法律责任。</p>
+					<p>	六、本承诺书适用中华人民共和国法律。</p>
+					<p>	本承诺书自您点击“同意”时起生效</p>
+			  </div>
+		  </div>
+		  <div class="search">
+				<a href="#" class="search-btn" id="saveUserInfo" style="margin: 0 5px;width: 45%;font-size: 16px;">
+				    同&nbsp;&nbsp;&nbsp;意
+				</a>
+	 			<a href="#" class="search-btn" id="close" style="margin: 0 5px;width: 45%;background: #FFFFFF;border: 1px solid gray;color: gray;font-size: 16px;">
+				   不同意
+				</a>
+		  </div>
+		</form>
+	</div>
+	<div align="center" style="font-size: 9px;margin-bottom: 5px;postion:absolute;color: gray;">注：在法律允许范围内本活动最终解释权归天翼电信终端有限公司所有。</div>
+</body>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+	wx.ready(function(){
+		wx.hideOptionMenu();
+	});
+</script>
+</html>

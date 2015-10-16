@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.PhotoInfoMapper"> 
+
+	<resultMap id="resultMap" type="com.ty.photography.model.PhotoInfo" >
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="user_id" property="userId" jdbcType="VARCHAR"/>
+		<result column="photo_title" property="photoTitle" jdbcType="VARCHAR"/>
+		<result column="photo_desc" property="photoDesc" jdbcType="VARCHAR"/>
+		<result column="photo_url" property="photoUrl" jdbcType="VARCHAR"/>
+		<result column="photo_status" property="photoStatus" jdbcType="TINYINT"/>
+		<result column="upload_date" property="uploadDate" jdbcType="TIMESTAMP"/>
+		<result column="is_select" property="isSelect" jdbcType="VARCHAR"/>
+		<result column="photo_group" property="photoGroup" jdbcType="TINYINT"/>
+		<result column="photo_type" property="photoType" jdbcType="VARCHAR"/>
+		<result column="photo_source" property="photoSource" jdbcType="VARCHAR"/>
+		<result column="judge_group_id" property="judgeGroupId" jdbcType="VARCHAR"/>
+		<result column="laud_num" property="laudNum" jdbcType="INTEGER"/>
+		<result column="simple_group" property="simpleGroup" jdbcType="TINYINT"/>
+		<result column="group_code" property="groupCode" jdbcType="VARCHAR"/>
+		<result column="group_serial" property="groupSerial" jdbcType="TINYINT"/>
+		<result column="competition_type" property="competitionType" jdbcType="TINYINT"/>
+	</resultMap>
+	
+	<select id="findMyPhotosByPage" parameterType="com.ty.photography.common.SearchPageUtil" resultMap="resultMap">
+		select * from sy_photo_info 
+		<where>
+			<if test="object !=null and object.userId != null">
+				 user_id = #{object.userId}
+			</if>
+			<if test="object !=null and object.photoGroup != null">
+				and photo_group = #{object.photoGroup}
+			</if>
+			<if test="object !=null and object.photoType != null">
+				and photo_type = #{object.photoType}
+			</if>
+			<if test="object !=null and object.competitionType != null">
+				and competition_type = #{object.competitionType}
+			</if>
+			and photo_status = 1
+		</where>
+	</select>
+	
+</mapper>

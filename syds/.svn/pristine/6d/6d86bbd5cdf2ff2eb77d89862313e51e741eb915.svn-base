@@ -1,0 +1,17 @@
+package com.ty.photography.service;
+
+import java.util.List;
+
+import com.ty.photography.common.Page;
+import com.ty.photography.model.PhotoInfo;
+
+public interface IPhotoInfoService {
+	/**
+	 * 分页查询我的照片
+	 * @param page
+	 * @param photoInfo
+	 * @return
+	 */
+	public List<PhotoInfo> findMyPhotosByPage(Page page,PhotoInfo photoInfo);
+
+}

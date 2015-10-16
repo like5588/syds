@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ty.photography.dao.UserCoinMapper"> 
+
+	<resultMap id="log_resultMap" type="com.ty.photography.model.UserCoinLog" >
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="user_id" property="userId" jdbcType="VARCHAR"/>
+		<result column="earn_coin" property="earnCoin" jdbcType="VARCHAR"/>
+		<result column="user_operate" property="userOperate" jdbcType="INTEGER"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<resultMap id="resultMap" type="com.ty.photography.model.UserCoin" >
+		<result column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="user_id" property="userId" jdbcType="VARCHAR"/>
+		<result column="total_coin" property="totalCoin" jdbcType="INTEGER"/>
+		<result column="current_coin" property="currentCoin" jdbcType="INTEGER"/>
+		<result column="highest_coin" property="highestCoin" jdbcType="INTEGER"/>
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<insert id="saveOrUpdate" parameterType="com.ty.photography.model.UserCoin">
+		insert into sy_user_coin (id,user_id,total_coin,current_coin,highest_coin,create_time,modify_time)
+		values (#{id},#{userId},#{totalCoin},#{currentCoin},#{highestCoin},#{createTime},#{modifyTime})
+		on duplicate key update total_coin = total_coin + #{earnCoin}, current_coin = current_coin + #{earnCoin},
+		highest_coin =  (CASE WHEN current_coin > highest_coin THEN highest_coin + 1 ELSE highest_coin END),
+		modify_time = #{modifyTime}
+	</insert>
+
+	<insert id="saveLog" parameterType="com.ty.photography.model.UserCoinLog">
+		insert into sy_user_coin_log (id, user_id, earn_coin, user_operate, create_time)
+		values (#{id},#{userId},#{earnCoin},#{userOperate},#{createTime})
+	</insert>
+	
+	<update id="updateCoins" parameterType="map">
+		update sy_user_coin set current_coin = current_coin - #{coin} , modify_time = #{modifyTime}
+		where user_id =#{userId}
+	</update>
+	
+	<select id="findByUserId" parameterType="string" resultMap="resultMap">
+		select * from sy_user_coin where user_id=#{userId}
+	</select>
+</mapper>
+

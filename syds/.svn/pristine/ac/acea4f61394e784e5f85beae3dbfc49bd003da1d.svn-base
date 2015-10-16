@@ -1,0 +1,108 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/css/wx_common.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/js/jquery-1.11.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+ <script src="http://code.jquery.com/jquery-1.7.1.min.js">
+ </script>  
+  <script src="//ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js">  
+  </script>  
+<script type="text/javascript">
+function request(paras){         
+	var url = location.href;  
+	var paraString = url.substring(url.indexOf("?")+1,url.length).split("&");        
+	var paraObj = {}         
+	for (i=0; j=paraString[i]; i++){        
+		paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length);     
+	}         
+	var returnValue = paraObj[paras.toLowerCase()];        
+	if(typeof(returnValue)=="undefined"){         
+		return "";        
+	}else{  
+		return returnValue;   
+	}  
+}
+var comics = [];
+$(document).ready(function(){ 
+	
+	if(request("type")=="myPhoto"){//我的作品展示
+		if(request("userId")== null || request("userId") ==''){
+		alert("还未登录，请登录天翼手机网");
+		window.location.href="http://www.hicdma.com/mh/views/pages/login.jsp";
+		//$.alert("请先登录",function(){window.location.replace("/views/pages/login.jsp?redirect=/2015syds/index.jsp");});
+		}
+		//读取当前用户的所有通过审核的照片信息   通过审核 	photo_status =’1‘
+		$.ajax({
+			url: "${pageContext.request.contextPath}/getMyPhonto.do?type=myPhoto&userId="+request("userId"),
+			type: "post",
+			cache: false,  
+			contentType: "application/json", 
+			dataType:"json",
+			success: function(msg){  
+				$.each(msg, function (n, key) { //alert(key.value);
+					//  var comics = [	{imgSrc : "cover4.jpg",title : "Captain Templates",year : "2010",
+					//	isSelect : "1",idPhoto : "1b650eb61687436196554e1a7b0f14ef"}  把字符串转换成对像	
+					comics[n] = eval("("+key.value+")");
+				}); 
+			    $("#comics").tmpl(comics).appendTo("#main");  
+			}
+		});
+	}else if(request("type")=="contryPhotos"){//全国作品展示
+		//读取全国所有通过审核的照片信息   通过审核 	photo_status =’1‘
+		$.ajax({
+			url: "${pageContext.request.contextPath}/contryPhotos.do?type=contryList",
+			type: "post",
+			cache: false,  
+			contentType: "application/json", 
+			dataType:"json",
+			success: function(msg){  
+				$.each(msg, function (n, key) { //alert(key.value);
+					//  var comics = [	{imgSrc : "cover4.jpg",title : "Captain Templates",year : "2010",
+					//	isSelect : "1",idPhoto : "1b650eb61687436196554e1a7b0f14ef"}  把字符串转换成对像	
+					comics[n] = eval("("+key.value+")");
+				}); 
+			    $("#comics").tmpl(comics).appendTo("#main");  
+			}
+		});
+	}
+		
+		
+});
+</script>
+<title>我的作品</title>
+</head>
+<body>
+ <div class="container">
+	<div class="top">作品列表</div>
+	<br>
+	<div id="main"> 
+	</div>  
+	<script id="comics" type="text/x-jquery-tmpl"> 
+		<div style="width:100px;height:120px;float:left;border:1px solid #FF">
+			<a id="${'${'}idPhoto}" href="${'${'}ImgBig}" target="view_window" title="大图"><img src="${'${'}imgSrc}" /></a> 
+			<div class="details">   
+				<div class="title"> 
+					标题：${'${'}title} 
+				</div>   
+				<div class="year"> 
+					上传日期：${'${'}year}   
+				</div> 
+  				<div class="isSelect"> 
+					状态：${'${'}isSelect}
+				</div>
+			</div> 
+		</div>   
+	</script>   
+</div>
+	
+</body>
+</html>

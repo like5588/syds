@@ -1,0 +1,275 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<script src="js/a1.js" type="text/javascript"></script>
+<script src="js/jquery-1.11.2.min.js" type="text/javascript" ></script>
+<script src="js/jQueryRotate.2.2.js"></script>
+<script src="js/jquery.easing.min.js"></script>
+<style>
+	*{padding:0;margin:0}
+	body{
+		text-align:center;
+		background-color:#c71a1a;
+	}
+	.ly-plate{
+		position:relative;
+		width:509px;
+		height:509px;
+		/*margin: 50px auto;*/
+		background:#9c1515;
+		border-radius:400px;
+		float:left;
+	}
+	.rotate-bg{
+		width:509px;
+		height:509px;
+		background:url(images/ly-plate.png);
+		position:absolute;
+		top:0;
+		left:0
+	}
+	.ly-plate div.lottery-star{
+		width:214px;
+		height:214px;
+		position:absolute;
+		top:150px;
+		left:147px;
+		/*text-indent:-999em;
+		overflow:hidden;
+		background:url(rotate-static.png);
+		-webkit-transform:rotate(0deg);*/
+		outline:none
+	}
+	.ly-plate div.lottery-star #lotteryBtn{
+		cursor: pointer;
+		position: absolute;
+		top:0;
+		left:0;
+		*left:-107px
+	}
+	.dst{
+		width:480px;
+		height:200px;
+		background:#fff;
+		position:fixed;
+		top:40%;
+		left:50%;
+		margin:-100px 0 0 -255px;
+		display:none;
+		padding:50px 15px 15px 15px;
+		text-align:left;
+		border:solid 2px #ffd889;
+		box-shadow:0 0 15px #ce9d39;
+		background:#fffad1;
+	}
+</style>
+<style>
+img{border:0;}
+.titme{
+	position:absolute;
+	top:0;
+	left:180px;
+}
+li{list-style:none;}
+.uername{float:left; width:260px;}
+.yh{float:right;}
+.yh{float:right;}
+#listbox{
+	height:150px; 
+	overflow:hidden; 
+	padding:10px;
+}
+#listbox li{height:24px; line-height:24px; padding-bottom:5px; margin-bottom:5px; border-bottom:solid 1px #ccc; position:relative; text-align:left;}
+#listbox li img{margin-left:5px;}
+#listbox_copymsgid li{list-style:none;}
+
+.listbox{background:#ffffe6; margin-right:15px;}
+  .listbox h1{font-size:1.8em; padding:10px 0; margin-bottom:5px; font-family:"微软雅黑"; text-align:center;}
+  .lis{
+	  height:200px;
+	  overflow:hidden;
+	  border:solid 1px #ccc;
+	  padding:5px;
+  }
+  .red{color:#fff552;}
+  .buyBottom{
+	  background:#085040;
+	  height:90px;
+	  padding:10px;
+	  position:fixed;
+	  _position:relative;
+	  bottom:0;
+	  left:50%;
+	  margin-left:-500px;
+	  width:980px;
+  }
+  .buyBottom h1{display:inline; float:left; margin-left:50px; font-size:2.2em; width:600px; text-align:left; padding-top:10px; color:#fff; font-weight:600;}
+  .buyBottom h1 span{
+	  font-size:20px;
+	  line-height:35px;
+  }
+  .buyBottom a{float:right; display:inline; margin-right:50px;}
+  .buyBottom a img{vertical-align:middle;}
+</style>
+    <div style="width:1000px; height:510px; padding-top:5px; margin:auto;" id="lottery_d">
+		<div class="ly-plate">
+			<div class="rotate-bg"></div>
+			<div class="lottery-star"><img src="images/rotate-static.png" id="lotteryBtn"></div>
+		</div>
+	    <div style=" float:right; width:450px; padding-top:100px; text-align:left;">
+	        <h1 style="font-size:3em; color:#fff; font-family:'微软雅黑'">摄影抽奖赢手机！</h1>
+	        <p style="color:#fff; margin-bottom:15px;">已经有<strong style="margin:0 5px; color:#FF9;">2134</strong>位用户中奖了！赶快来参与</p>
+			<div class="listbox">
+			    <h1 style="color:#F00">↓↓↓ 火热抽奖中 ↓↓↓</h1>
+			    <div id="listbox">
+			      <ul id="userlist">
+			        <li>
+			          <div class="titme">33秒前</div>
+			          <div class="uername">主****</div>
+			          <div class="yh">获得千元手机大奖</div>
+			        </li>
+			        <li>
+			          <div class="titme">1分钟前</div>
+			          <div class="uername">c***</div>
+			          <div class="yh">获得100元手机充值卡</div>
+			        </li>
+			        <li>
+			          <div class="titme">1分钟前</div>
+			          <div class="uername">a***</div>
+			          <div class="yh">获得20元手机充值卡</div>
+			        </li>
+			        <li>
+			          <div class="titme">2分钟前</div>
+			          <div class="uername">e***</div>
+			          <div class="yh">获得20元手机充值卡</div>
+			        </li>
+			        <li>
+			          <div class="titme">2分钟前</div>
+			          <div class="uername">过***</div>
+			          <div class="yh" style="">获得50元手机充值卡</div>
+			        </li>
+				   </ul>
+			     </div>
+		  	</div>
+	    </div>
+    </div> 	
+    <div class="dst" id="dst">
+        <div style="float:left; width:120px;"><img src="images/love.png"></div>
+        <div style="float:right; width:340px;">
+            <h1 style="font-family:'微软雅黑'; font-size:1.8em; color:#f00; margin-bottom:5px;" id="h1_content"></h1>
+            <p>已经有<strong style="margin:0 5px; color:#f00;">2134</strong>位用户中奖了！</p>
+            <p style="margin-top:15px;"><a target="_blank" href="#" style="width:119px; display:block; overflow:hidden; line-height:500px;height:42px; background:url(images/but.png)"></a></p>
+        </div>
+    </div>
+    
+    <div class="dst" id="dst1">
+        <div style="text-align:center;width:480px;">
+            <h1 style="font-family:'微软雅黑'; font-size:1.8em; color:#f00; margin-bottom:5px;">参与抽奖，请先登录！</h1>
+            <p style="margin-top:50px;padding-left:180px;"><a target="_blank" href="http://www.hicdma.com/mh/views/pages/login.jsp?redirect=http://yxhd.hicdma.com/syds/mh_index.jsp#lottery_d" style="width:119px; display:block; overflow:hidden; line-height:500px;height:42px; background:url(images/login.png)"></a></p>
+        </div>
+    </div>
+    
+    <div class="dst" id="dst2">
+        <div style="text-align:center;width:480px;">
+            <h1 style="font-family:'微软雅黑'; font-size:1.8em; color:#f00; margin-bottom:5px;" id="dst2_h"></h1>
+            <p style="margin-top:50px;padding-left:180px;"><a target="_blank" href="javascript:hide_dst2();" style="width:119px; display:block; overflow:hidden; line-height:500px;height:42px; background:url(images/sure.png)"></a></p>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+  //ajax拦截session失效
+    $.ajaxSetup({   
+        contentType:"application/x-www-form-urlencoded;charset=utf-8",   
+        cache:false ,   
+        complete:function(data,TS){
+        	var res=eval('('+data.responseText+')');  
+           if(res.sessionState == "timeout"){
+			   $("#dst1").fadeIn();
+           }
+        }   
+    });
+  	function hide_dst2(){
+  		$("#lotteryBtn").on("click",lottery);
+  		$("#dst2").hide();
+  	}
+	function init_Scroll(){
+	     var scrollPics = new scrollVertical('listbox','userlist');
+	         scrollPics.speed = 10; /* 调节speed值可以改变滚动间隙 */
+	         scrollPics.isPause = true;
+	 
+	     var timer_start = setTimeout(function(){clearTimeout(timer_start);scrollPics.isPause = false;},1000);
+	
+	     Event.addEvent(scrollPics.scrollArea,"mouseover",function(){scrollPics.isPause = true;});
+	     Event.addEvent(scrollPics.scrollArea,"mouseout",function(){scrollPics.isPause = false;});
+	}
+	Event.addEvent(window,'load',init_Scroll);
+	
+ 		var timeOut = function(){  //超时函数
+ 			$("#lotteryBtn").rotate({
+ 				angle:0, 
+ 				duration: 10000, 
+ 				animateTo: 2160, //这里是设置请求超时后返回的角度，所以应该还是回到最原始的位置，2160是因为我要让它转6圈，就是360*6得来的
+ 				callback:function(){
+ 					alert('亲！没有中奖哦！！')
+ 				}
+ 			}); 
+ 		}; 
+ 		var rotateFunc = function(angle,dur,text){ 
+ 			$('#lotteryBtn').stopRotate();
+ 			$("#lotteryBtn").rotate({
+ 				angle:0, 
+ 				duration: dur, 
+ 				animateTo: angle,
+ 				callback:function(){
+ 					//alert(text)
+ 					$("#h1_content").text(text);
+ 					$("#dst").fadeIn();
+ 					$("#lotteryBtn").on("click",lottery);
+ 				}
+ 			}); 
+ 		};
+ 		
+ 		var lottery = function(){
+			$("#lotteryBtn").off("click");
+			var time = [1];
+			time = time[Math.floor(Math.random()*time.length)];
+			if(time==0){
+				timeOut(); //网络超时
+			}
+			if(time==1){
+				$.ajax({
+					url : "mh/lottery.do",
+					type : 'POST',
+					dataType:"json",
+					cache : false,
+					success: function(msg){
+						if(msg.result == 0){
+							var info = "";
+							if(msg.info == 1){
+								info = "恭喜你获得：千元手机大奖！";
+							}else if(msg.info == 2){
+								info = "恭喜你获得：100元充值卡奖品";
+							}else if(msg.info == 3){
+								info = "恭喜你获得：50元充值卡奖品";
+							}else if(msg.info == 4){
+								info = "恭喜你获得：20元充值卡奖品";
+							}else if(msg.info == 0){
+								info = "很遗憾，没有中奖，请再接再厉";
+							}
+							rotateFunc(msg.angle,msg.duration,info);
+						}else if(msg.result == 2){
+							$("#dst2_h").text("今天抽奖已满5次，请明天再来");
+							$("#dst2").fadeIn();
+						}else if(msg.result == 3){
+							$("#dst2_h").text("您的积分不足，请参与点赞或者上传照片获取积分");
+							$("#dst2").fadeIn();
+						}
+						
+					}
+				})
+			}
+		};
+		$("#lotteryBtn").on("click",lottery);
+    		
+     </script>  	
+  	

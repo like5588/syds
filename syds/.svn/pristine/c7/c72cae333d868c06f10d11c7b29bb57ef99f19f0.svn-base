@@ -1,0 +1,49 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ page import="com.ty.photography.model.JudgeLogon" %>
+<%@ page import="com.ty.photography.common.CommonUtils" %>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#logout").click(function(){
+		if(confirm("确认注销？")){
+			$.ajax({
+				url : "${pageContext.request.contextPath}/logout.do",
+				type : 'POST',
+				data : "",
+				dataType:"json",
+				cache : false,
+				success : function(json) {
+					if(json.result ==0){
+						window.location.href = "${pageContext.request.contextPath}/pingxuan.jsp";
+					}
+				}
+			});
+		}
+	});
+});
+</script>
+<%
+JudgeLogon judge = (JudgeLogon)request.getSession().getAttribute("judge");
+if(judge == null){
+	String basePath = CommonUtils.parseProperties("BASE_URL");
+	response.setContentType("text/html; charset=utf-8");
+	String redirectPath = basePath + "/pingxuan.jsp";
+	response.sendRedirect(redirectPath);
+}
+
+%>
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" style="color: #FFFFFF;" href="#">天翼2015摄影大赛审核平台</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+	          <ul class="nav navbar-nav navbar-right">
+	          	<%if(judge != null) {%>
+	            <li style="border-right: 1px solid #eee;"><a href="#"><%=judge.getPetName()%>，您好</a></li>
+	            <li><a href="#" id="logout">注销</a></li>
+	            <% }%>
+	          </ul>
+        	</div>
+		</div>
+	</nav>

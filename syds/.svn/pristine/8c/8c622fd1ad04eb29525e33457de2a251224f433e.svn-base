@@ -1,0 +1,35 @@
+﻿body, ul, li { margin: 0; padding: 0; }
+*html body { _zoom: expression(function(x){x.style.zoom=1;try{document.execCommand('BackgroundImageCache',false,true)}catch(e){}}(this)); }
+a { outline: none; }
+.hide { display: none; }
+/*-- 在这里改栏目（就是下面那一条）的背景图 ----开始*/
+.png { display: inline-block; background-image: url(../mh_images/icon.png); background-repeat: no-repeat; vertical-align: middle; width: 105px; height: 80px; }
+.menu_home { background-position: 0 0; }
+.menu_game { background-position: -105px 0; }
+.menu_video { background-position: -210px 0; }
+.menu_novel { background-position: -315px 0; }
+.menu_music { background-position: -420px 0; }
+.menu_download { background-position: 0 -220px; width: 281px; height: 70px; }
+/*---- 下面这一部分是鼠标移动到栏目上后的背景图*/
+.menu_home:hover, .menu .active .menu_home { background-position: 0 -105px; }
+.menu_game:hover, .menu .active .menu_game { background-position: -105px -100px; }
+.menu_video:hover, .menu .active .menu_video { background-position: -210px -100px; }
+.menu_novel:hover, .menu .active .menu_novel { background-position: -315px -100px; }
+.menu_music:hover, .menu .active .menu_music { background-position: -420px -100px; }
+.menu_download:hover { background-position: -300px -220px; }
+/*-- 在这里改栏目（就是下面那一条）的背景图 ----结束*/
+.inner { width: 580px; margin: 0 auto; height:100px;}
+/*-- 在这一部分改焦点图 ---- 开始*/
+/*---- 注意：下面这一条是第一张焦点图，改 background 属性就行，其它的不用管*/
+.banner, .banner_music, .banner_game, .banner_video, .banner_novel { background: url(../mh_images/01.jpg) no-repeat center; min-width: 1336px; height: 624px; position: relative; }
+.banner_music { background: url(../mh_images/01.jpg) no-repeat center; }
+.banner_game { background: url(../mh_images/02.jpg) no-repeat center; }
+.banner_video { background: url(../mh_images/03.jpg) no-repeat center; }
+.banner_novel { background: url(../mh_images/04.jpg) no-repeat center; }
+.banner_music { background: url(../mh_images/05.jpg) no-repeat center; }
+/*-- 在这一部分改焦点图 ---- 结束*/
+.banner .mask { display: block; width: 100%; position: absolute; left: 0; bottom: 0; height: 80px; background: #000000; opacity: 0.2; filter: alpha(opacity=30); z-index: 1; }
+.banner .inner { display: block; width: 100%; position: absolute; left: 0; bottom: 10px; z-index: 2; text-align: center; }
+.banner .menu { padding: 30px 10px 0 40px; height: 96px; width: 640px; margin: 0 auto; overflow: hidden; zoom: 1; }
+    .banner .menu li { float: left; display: inline-block; height: 96px; margin-right: 20px; vertical-align: middle; }
+.banner .btns { width: 281px; margin: 13px 0 0 55px; }
