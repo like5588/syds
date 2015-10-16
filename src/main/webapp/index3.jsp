@@ -1,7 +1,7 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
 <%@ page isELIgnored="false" %> 
 <%
-	String path = request.getContextPath();
+	String path = request.getContextPath();  add change
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
